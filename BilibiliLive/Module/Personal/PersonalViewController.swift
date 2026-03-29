@@ -31,9 +31,16 @@ class PersonalViewController: UIViewController, BLTabBarContentVCProtocol {
     var cellModels = [CellModel]()
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyModernBackgroundIfNeeded()
         setupData()
         leftCollectionView.reloadData()
         avatarImageView.layer.cornerRadius = avatarImageView.frame.size.width / 2
+        avatarImageView.layer.borderWidth = 2
+        avatarImageView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+        avatarImageView.clipsToBounds = true
+        usernameLabel.textColor = BLVisualTheme.textPrimary
+        leftCollectionView.backgroundColor = .clear
+        contentView.backgroundColor = .clear
         leftCollectionView.register(BLSettingLineCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         leftCollectionView.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .top)
         collectionView(leftCollectionView, didSelectItemAt: IndexPath(row: 0, section: 0))

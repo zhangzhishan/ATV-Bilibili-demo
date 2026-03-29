@@ -8,7 +8,7 @@
 import UIKit
 
 class BLSettingLineCollectionViewCell: BLMotionCollectionViewCell {
-    let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
     let selectedWhiteView = UIView()
     let titleLabel = UILabel()
     override var isSelected: Bool {
@@ -26,8 +26,10 @@ class BLSettingLineCollectionViewCell: BLMotionCollectionViewCell {
         }
         effectView.layer.cornerRadius = 10
         effectView.layer.cornerCurve = .continuous
+        effectView.layer.borderWidth = 1
+        effectView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
         effectView.clipsToBounds = true
-        selectedWhiteView.backgroundColor = UIColor.white
+        selectedWhiteView.backgroundColor = BLVisualTheme.accent.withAlphaComponent(0.25)
         selectedWhiteView.isHidden = !isFocused
         effectView.contentView.addSubview(selectedWhiteView)
         selectedWhiteView.snp.makeConstraints { make in
@@ -40,8 +42,8 @@ class BLSettingLineCollectionViewCell: BLMotionCollectionViewCell {
             make.top.bottom.equalToSuperview().inset(8)
         }
         titleLabel.textAlignment = .left
-        titleLabel.font = UIFont.systemFont(ofSize: 40, weight: .regular)
-        titleLabel.textColor = .black
+        titleLabel.font = UIFont.systemFont(ofSize: 36, weight: .semibold)
+        titleLabel.textColor = BLVisualTheme.textPrimary
     }
 
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
@@ -51,6 +53,7 @@ class BLSettingLineCollectionViewCell: BLMotionCollectionViewCell {
 
     func updateView() {
         selectedWhiteView.isHidden = !(isFocused || isSelected)
+        effectView.layer.borderColor = (isFocused || isSelected) ? BLVisualTheme.accent.cgColor : BLVisualTheme.cardStroke.cgColor
     }
 
     static func makeLayout() -> UICollectionViewLayout {

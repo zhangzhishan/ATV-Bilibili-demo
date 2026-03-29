@@ -30,10 +30,11 @@ extension TitleSupplementaryView {
         label.adjustsFontForContentSizeCategory = true
         label.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
+            make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-        label.font = UIFont.preferredFont(forTextStyle: .title3)
+        label.font = UIFont.systemFont(ofSize: 46, weight: .bold)
+        label.textColor = BLVisualTheme.textPrimary
     }
 }

@@ -20,21 +20,31 @@ class BLTextOnlyCollectionViewCell: BLMotionCollectionViewCell {
         effectView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        effectView.contentView.addSubview(selectedWhiteView)
+        selectedWhiteView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        selectedWhiteView.backgroundColor = BLVisualTheme.accent.withAlphaComponent(0.22)
+        selectedWhiteView.isHidden = true
         effectView.contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(20)
             make.top.bottom.lessThanOrEqualToSuperview().inset(8)
         }
-        titleLabel.textColor = .white
+        titleLabel.textColor = BLVisualTheme.textPrimary
         titleLabel.numberOfLines = 2
         titleLabel.font = UIFont.systemFont(ofSize: 26, weight: .medium)
         effectView.layer.cornerRadius = 16
+        effectView.layer.cornerCurve = .continuous
+        effectView.layer.borderWidth = 1
+        effectView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
         effectView.clipsToBounds = true
     }
 
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
         selectedWhiteView.isHidden = !isFocused
+        effectView.layer.borderColor = isFocused ? BLVisualTheme.accent.cgColor : BLVisualTheme.cardStroke.cgColor
     }
 }

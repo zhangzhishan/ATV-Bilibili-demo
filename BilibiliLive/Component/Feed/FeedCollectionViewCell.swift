@@ -20,6 +20,7 @@ class FeedCollectionViewCell: BLMotionCollectionViewCell {
     private let infoView = UIView()
     private let avatarView = UIImageView()
     private let overlayView = BLOverlayView()
+    private let infoBackgroundView = UIView()
 
     override func setup() {
         super.setup()
@@ -33,7 +34,14 @@ class FeedCollectionViewCell: BLMotionCollectionViewCell {
             make.top.equalToSuperview()
             make.height.equalTo(imageView.snp.width).multipliedBy(9.0 / 16)
         }
-        imageView.layer.cornerRadius = 12
+        contentView.backgroundColor = BLVisualTheme.cardBackground
+        contentView.layer.cornerRadius = 20
+        contentView.layer.cornerCurve = .continuous
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+        contentView.clipsToBounds = true
+
+        imageView.layer.cornerRadius = 16
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
 
@@ -47,10 +55,18 @@ class FeedCollectionViewCell: BLMotionCollectionViewCell {
         overlayView.layer.cornerRadius = imageView.layer.cornerRadius
         overlayView.clipsToBounds = true
 
+        contentView.addSubview(infoBackgroundView)
+        infoBackgroundView.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(imageView.snp.bottom).offset(-2)
+        }
+        infoBackgroundView.backgroundColor = BLVisualTheme.cardBackground
+
         contentView.addSubview(infoView)
         infoView.snp.makeConstraints { make in
-            make.leading.trailing.bottom.equalToSuperview()
-            make.top.equalTo(imageView.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(14)
+            make.bottom.equalToSuperview().inset(14)
+            make.top.equalTo(imageView.snp.bottom).offset(10)
         }
 
         let hStackView = UIStackView()
@@ -65,7 +81,7 @@ class FeedCollectionViewCell: BLMotionCollectionViewCell {
         }
 
         hStackView.alignment = .top
-        hStackView.spacing = 10
+        hStackView.spacing = 12
         avatarView.backgroundColor = .clear
         avatarView.snp.makeConstraints { make in
             make.width.equalTo(avatarView.snp.height)
@@ -84,12 +100,13 @@ class FeedCollectionViewCell: BLMotionCollectionViewCell {
         stackView.spacing = 6
         stackView.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.holdScrolling = true
+        titleLabel.textColor = BLVisualTheme.textPrimary
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         titleLabel.fadeLength = 60
         upLabel.setContentHuggingPriority(.required, for: .vertical)
         upLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        upLabel.textColor = UIColor(named: "titleColor")
+        upLabel.textColor = BLVisualTheme.textSecondary
         upLabel.adjustsFontSizeToFitWidth = true
         upLabel.minimumScaleFactor = 0.1
     }
@@ -142,6 +159,7 @@ class FeedCollectionViewCell: BLMotionCollectionViewCell {
         let style = styleOverride ?? Settings.displayStyle
         titleLabel.font = style.titleFont
         upLabel.font = style.upFont
+        titleLabel.trailingBuffer = 40
     }
 
     @objc private func actionLongPress(sender: UILongPressGestureRecognizer) {

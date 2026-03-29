@@ -24,6 +24,8 @@ class StandardVideoCollectionViewController<T: PlayableData>: UIViewController, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyModernBackgroundIfNeeded()
+        view.backgroundColor = .clear
         setupCollectionView()
         collectionVC.show(in: self)
         reloadData()

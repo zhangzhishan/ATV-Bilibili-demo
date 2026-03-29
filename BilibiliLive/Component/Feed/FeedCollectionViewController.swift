@@ -151,6 +151,7 @@ class FeedCollectionViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .clear
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: makeCollectionViewLayout())
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
@@ -158,6 +159,8 @@ class FeedCollectionViewController: UIViewController {
         }
         collectionView.dataSource = dataSource
         collectionView.delegate = self
+        collectionView.backgroundColor = .clear
+        collectionView.remembersLastFocusedIndexPath = true
     }
 
     // MARK: - Private
@@ -192,6 +195,8 @@ class FeedCollectionViewController: UIViewController {
         let section = NSCollectionLayoutSection(group: group)
         if baseSpacing > 0 {
             section.contentInsets = NSDirectionalEdgeInsets(top: baseSpacing, leading: 0, bottom: 0, trailing: 0)
+        } else {
+            section.contentInsets = NSDirectionalEdgeInsets(top: 28, leading: 0, bottom: 20, trailing: 0)
         }
 
         if showHeader {

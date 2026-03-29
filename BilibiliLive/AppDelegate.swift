@@ -16,12 +16,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Logger.setup()
+        UIView.appearance().tintColor = BLVisualTheme.accent
         ImageCache.default.diskStorage.config.sizeLimit = 500 * 1024 * 1024
         AVInfoPanelCollectionViewThumbnailCellHook.start()
         AccountManager.shared.bootstrap()
         BiliBiliUpnpDMR.shared.start()
         URLSession.shared.configuration.headers.add(.userAgent("BiLiBiLi AppleTV Client/1.0.0 (github/yichengchen/ATV-Bilibili-live-demo)"))
         window = UIWindow()
+        window?.tintColor = BLVisualTheme.accent
         if ApiRequest.isLogin() {
             if let expireDate = ApiRequest.getToken()?.expireDate {
                 let now = Date()

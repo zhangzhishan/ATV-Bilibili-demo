@@ -22,6 +22,8 @@ class CategoryViewController: UIViewController, BLTabBarContentVCProtocol {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyModernBackgroundIfNeeded()
+        view.backgroundColor = .clear
         if categories.isEmpty {
         } else {
             initTypeCollectionView()
@@ -40,6 +42,11 @@ class CategoryViewController: UIViewController, BLTabBarContentVCProtocol {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.width.equalTo(500)
         }
+        typeCollectionView.backgroundColor = BLVisualTheme.sidebarBackground
+        typeCollectionView.layer.cornerRadius = 26
+        typeCollectionView.layer.cornerCurve = .continuous
+        typeCollectionView.layer.borderWidth = 1
+        typeCollectionView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
         typeCollectionView.dataSource = self
         typeCollectionView.delegate = self
 
@@ -49,6 +56,7 @@ class CategoryViewController: UIViewController, BLTabBarContentVCProtocol {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.left.equalTo(typeCollectionView.snp.right)
         }
+        contentView.backgroundColor = .clear
         typeCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .top)
         collectionView(typeCollectionView, didSelectItemAt: IndexPath(item: 0, section: 0))
     }

@@ -24,11 +24,15 @@ class BLMotionCollectionViewCell: UICollectionViewCell {
 
     func setup() {
         motionEffectV = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
-        motionEffectV.maximumRelativeValue = 8
-        motionEffectV.minimumRelativeValue = -8
+        motionEffectV.maximumRelativeValue = 10
+        motionEffectV.minimumRelativeValue = -10
         motionEffectH = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
-        motionEffectH.maximumRelativeValue = 8
-        motionEffectH.minimumRelativeValue = -8
+        motionEffectH.maximumRelativeValue = 10
+        motionEffectH.minimumRelativeValue = -10
+        layer.shadowColor = BLVisualTheme.focusGlow.cgColor
+        layer.shadowOpacity = 0
+        layer.cornerCurve = .continuous
+        contentView.layer.cornerCurve = .continuous
     }
 
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
@@ -54,12 +58,15 @@ class BLMotionCollectionViewCell: UICollectionViewCell {
             let scaleDiff = (bounds.size.height * scaleFactor - bounds.size.height) / 2
             transform = CGAffineTransformTranslate(transform, 0, -scaleDiff)
             layer.shadowOffset = CGSizeMake(0, 16)
-            layer.shadowOpacity = 0.2
-            layer.shadowRadius = 18.0
+            layer.shadowOpacity = 0.48
+            layer.shadowRadius = 30.0
+            layer.borderColor = BLVisualTheme.cardStroke.cgColor
+            layer.borderWidth = 1.4
         } else {
             transform = CGAffineTransformIdentity
             layer.shadowOpacity = 0
             layer.shadowOffset = CGSizeMake(0, 0)
+            layer.borderWidth = 0
         }
     }
 }

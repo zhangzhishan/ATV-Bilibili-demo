@@ -23,6 +23,8 @@ class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyModernBackgroundIfNeeded()
+        styleLoginUI()
         BLTabBarViewController.clearSelected()
     }
 
@@ -105,5 +107,58 @@ class LoginViewController: UIViewController {
 
     @IBAction func actionStart(_ sender: Any) {
         initValidation()
+    }
+
+    private func styleLoginUI() {
+        view.backgroundColor = .clear
+        qrcodeImageView.backgroundColor = UIColor.white
+        qrcodeImageView.layer.cornerRadius = 30
+        qrcodeImageView.layer.cornerCurve = .continuous
+        qrcodeImageView.layer.borderWidth = 1
+        qrcodeImageView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+        qrcodeImageView.clipsToBounds = true
+
+        if let button = view.findSubview(of: UIButton.self) {
+            button.configuration = UIButton.Configuration.filled()
+            button.configuration?.title = "刷新二维码"
+            button.configuration?.baseBackgroundColor = BLVisualTheme.accent
+            button.configuration?.baseForegroundColor = UIColor.black
+            button.configuration?.cornerStyle = .capsule
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 34, weight: .bold)
+        }
+
+        let labels = view.findSubviews(of: UILabel.self)
+        for label in labels {
+            label.textColor = BLVisualTheme.textSecondary
+            if label.font.pointSize >= 40 {
+                label.textColor = BLVisualTheme.textPrimary
+                label.font = UIFont.systemFont(ofSize: 64, weight: .bold)
+            }
+        }
+    }
+}
+
+private extension UIView {
+    func findSubview<T: UIView>(of type: T.Type) -> T? {
+        if let view = self as? T {
+            return view
+        }
+        for child in subviews {
+            if let found = child.findSubview(of: type) {
+                return found
+            }
+        }
+        return nil
+    }
+
+    func findSubviews<T: UIView>(of type: T.Type) -> [T] {
+        var result: [T] = []
+        if let view = self as? T {
+            result.append(view)
+        }
+        for child in subviews {
+            result.append(contentsOf: child.findSubviews(of: type))
+        }
+        return result
     }
 }

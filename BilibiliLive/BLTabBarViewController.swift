@@ -24,6 +24,8 @@ class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyModernBackgroundIfNeeded()
+        configureTabBarAppearance()
         delegate = self
         var vcs = [UIViewController]()
 
@@ -58,6 +60,36 @@ class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
         setViewControllers(vcs, animated: false)
         selectedIndex = UserDefaults.standard.integer(forKey: selectedIndexKey)
+    }
+
+    private func configureTabBarAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundEffect = UIBlurEffect(style: .dark)
+        appearance.backgroundColor = UIColor.black.withAlphaComponent(0.28)
+
+        let normalAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: BLVisualTheme.textSecondary,
+            .font: UIFont.systemFont(ofSize: 27, weight: .semibold),
+        ]
+        let selectedAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: BLVisualTheme.textPrimary,
+            .font: UIFont.systemFont(ofSize: 27, weight: .bold),
+        ]
+
+        for itemAppearance in [appearance.stackedLayoutAppearance, appearance.inlineLayoutAppearance, appearance.compactInlineLayoutAppearance] {
+            itemAppearance.normal.titleTextAttributes = normalAttributes
+            itemAppearance.normal.iconColor = BLVisualTheme.textSecondary
+            itemAppearance.selected.titleTextAttributes = selectedAttributes
+            itemAppearance.selected.iconColor = BLVisualTheme.accent
+            itemAppearance.focused.titleTextAttributes = selectedAttributes
+            itemAppearance.focused.iconColor = BLVisualTheme.accent
+        }
+
+        tabBar.standardAppearance = appearance
+        tabBar.scrollEdgeAppearance = appearance
+        tabBar.unselectedItemTintColor = BLVisualTheme.textSecondary
+        tabBar.tintColor = BLVisualTheme.accent
     }
 
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
