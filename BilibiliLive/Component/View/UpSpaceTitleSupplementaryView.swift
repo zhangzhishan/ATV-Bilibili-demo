@@ -72,8 +72,9 @@ class UpSpaceTitleSupplementaryView: UICollectionReusableView {
         }
 
         nameLabel.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
+        nameLabel.textColor = BLVisualTheme.textPrimary
         despLabel.font = UIFont.systemFont(ofSize: 23, weight: .regular)
-        despLabel.textColor = UIColor(named: "titleColor")
+        despLabel.textColor = BLVisualTheme.textSecondary
         despLabel.numberOfLines = 2
 
         followButton.image = UIImage(systemName: "heart")

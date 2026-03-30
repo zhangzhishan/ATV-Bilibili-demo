@@ -16,8 +16,7 @@ class BLOverlayView: UIView {
     // 1. 渐变层
     private let gradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
-        // 透明 -> 黑色(60%透明度)
-        layer.colors = [UIColor.clear.cgColor, UIColor.black.withAlphaComponent(0.6).cgColor]
+        layer.colors = [UIColor.clear.cgColor, UIColor(hex: 0x0B111F, alpha: 0.78).cgColor]
         layer.locations = [0.0, 1.0]
         return layer
     }()
@@ -43,7 +42,7 @@ class BLOverlayView: UIView {
     // 4. 右上角角标容器
     private let badgeContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemPink
+        view.backgroundColor = BLVisualTheme.accent
         view.layer.cornerRadius = 12
         view.layer.maskedCorners = [.layerMinXMaxYCorner]
         view.layer.masksToBounds = true
@@ -53,7 +52,7 @@ class BLOverlayView: UIView {
 
     private let badgeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = UIColor.black
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.textAlignment = .center
         return label
@@ -127,7 +126,7 @@ class BLOverlayView: UIView {
     // MARK: - Public API
 
     /// 设置角标
-    func setBadge(text: String?, color: UIColor = .systemPink) {
+    func setBadge(text: String?, color: UIColor = BLVisualTheme.accent) {
         if let text = text, !text.isEmpty {
             badgeLabel.text = text
             badgeContainer.backgroundColor = color
@@ -174,7 +173,7 @@ class BLOverlayView: UIView {
         let container = UIView()
 
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = BLVisualTheme.textPrimary
         label.font = .systemFont(ofSize: fontSize)
         label.text = text
 
@@ -183,7 +182,7 @@ class BLOverlayView: UIView {
         if let iconName = icon {
             let config = UIImage.SymbolConfiguration(pointSize: 10, weight: .regular)
             let image = UIImage(systemName: iconName, withConfiguration: config)?
-                .withTintColor(.white, renderingMode: .alwaysOriginal)
+                .withTintColor(BLVisualTheme.textPrimary, renderingMode: .alwaysOriginal)
             let imageView = UIImageView(image: image)
 
             container.addSubview(imageView)

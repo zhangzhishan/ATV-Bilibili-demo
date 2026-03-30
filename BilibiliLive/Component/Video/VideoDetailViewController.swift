@@ -639,7 +639,7 @@ class BLCardView: TVCardView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        cardBackgroundColor = UIColor(named: "bgColor")
+        cardBackgroundColor = BLVisualTheme.cardBackground
     }
 }
 

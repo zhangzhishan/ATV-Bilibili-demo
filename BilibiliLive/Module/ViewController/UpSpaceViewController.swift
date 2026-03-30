@@ -52,9 +52,16 @@ class UpSpaceViewController: StandardVideoCollectionViewController<ApiRequest.Up
         }
         blockedMessageLabel.text = "无法查看空间内容，请将该用户移除黑名单"
         blockedMessageLabel.font = UIFont.systemFont(ofSize: 28, weight: .medium)
-        blockedMessageLabel.textColor = UIColor(named: "titleColor") ?? .white
+        blockedMessageLabel.textColor = BLVisualTheme.textSecondary
+        blockedMessageLabel.backgroundColor = BLVisualTheme.cardBackground
+        blockedMessageLabel.layer.cornerRadius = 14
+        blockedMessageLabel.layer.cornerCurve = .continuous
+        blockedMessageLabel.layer.borderWidth = 1
+        blockedMessageLabel.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+        blockedMessageLabel.clipsToBounds = true
         blockedMessageLabel.textAlignment = .center
         blockedMessageLabel.numberOfLines = 0
+        blockedMessageLabel.layoutMargins = UIEdgeInsets(top: 14, left: 18, bottom: 14, right: 18)
         blockedMessageLabel.isHidden = true
     }
 
