@@ -33,6 +33,10 @@ class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         followVC.tabBarItem.title = "关注"
         vcs.append(followVC)
 
+        let followBangumiVC = FollowBangumiViewController()
+        followBangumiVC.tabBarItem.title = "追番"
+        vcs.append(followBangumiVC)
+
         let feedVC = FeedViewController()
         feedVC.tabBarItem.title = "推荐"
         vcs.append(feedVC)
