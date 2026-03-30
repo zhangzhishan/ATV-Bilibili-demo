@@ -81,8 +81,11 @@ class SettingsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyModernBackgroundIfNeeded()
+        view.backgroundColor = .clear
         view.addSubview(collectionView)
         collectionView.remembersLastFocusedIndexPath = false
+        collectionView.backgroundColor = .clear
         collectionView.snp.makeConstraints { make in
             make.top.right.bottom.equalToSuperview()
             make.left.equalToSuperview().offset(20)
@@ -355,7 +358,10 @@ class SettingsSwitchCell: BLMotionCollectionViewCell {
     func setupView() {
         contentView.addSubview(titleLabel)
         contentView.addSubview(descLabel)
-        contentView.layer.cornerRadius = 10
+        contentView.layer.cornerRadius = 14
+        contentView.layer.cornerCurve = .continuous
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
 
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
@@ -369,25 +375,23 @@ class SettingsSwitchCell: BLMotionCollectionViewCell {
         }
 
         descLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        titleLabel.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
+        descLabel.font = UIFont.systemFont(ofSize: 28, weight: .medium)
 
         updateColor()
     }
 
     func updateColor() {
-        if traitCollection.userInterfaceStyle == .dark {
-            if isFocused {
-                contentView.backgroundColor = UIColor.white
-                titleLabel.textColor = UIColor.black
-                descLabel.textColor = UIColor.black
-            } else {
-                contentView.backgroundColor = UIColor.clear
-                titleLabel.textColor = UIColor.white
-                descLabel.textColor = UIColor.secondaryLabel
-            }
+        if isFocused {
+            contentView.backgroundColor = BLVisualTheme.accent.withAlphaComponent(0.8)
+            titleLabel.textColor = UIColor.black
+            descLabel.textColor = UIColor.black
+            contentView.layer.borderColor = BLVisualTheme.accent.cgColor
         } else {
-            contentView.backgroundColor = isFocused ? UIColor.white : UIColor.clear
-            titleLabel.textColor = .black
-            descLabel.textColor = UIColor.secondaryLabel
+            contentView.backgroundColor = BLVisualTheme.cardBackground
+            titleLabel.textColor = BLVisualTheme.textPrimary
+            descLabel.textColor = BLVisualTheme.textSecondary
+            contentView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
         }
     }
 }
@@ -407,8 +411,8 @@ class SettingsHeaderView: UICollectionReusableView {
 
     func setup() {
         addSubview(label)
-        label.font = .preferredFont(forTextStyle: .footnote)
-        label.textColor = UIColor.secondaryLabel
+        label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+        label.textColor = BLVisualTheme.textSecondary
         label.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
             make.top.equalToSuperview().offset(20)

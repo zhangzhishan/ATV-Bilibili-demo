@@ -120,6 +120,13 @@ class UpCell: BLMotionCollectionViewCell {
 
     override func setup() {
         super.setup()
+        contentView.backgroundColor = BLVisualTheme.cardBackground
+        contentView.layer.cornerRadius = 16
+        contentView.layer.cornerCurve = .continuous
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+        contentView.clipsToBounds = true
+
         contentView.addSubview(imageView)
         contentView.addSubview(nameLabel)
         contentView.addSubview(despLabel)
@@ -145,11 +152,10 @@ class UpCell: BLMotionCollectionViewCell {
         }
 
         nameLabel.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
+        nameLabel.textColor = BLVisualTheme.textPrimary
         nameLabel.fadeLength = 60
         despLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
-        despLabel.textColor = UIColor(named: "titleColor")
-        contentView.backgroundColor = UIColor(named: "bgColor")
-        contentView.layer.cornerRadius = 16
+        despLabel.textColor = BLVisualTheme.textSecondary
     }
 
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {

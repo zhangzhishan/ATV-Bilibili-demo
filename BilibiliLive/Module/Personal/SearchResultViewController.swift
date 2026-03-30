@@ -29,6 +29,8 @@ class SearchResultViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyModernBackgroundIfNeeded()
+        view.backgroundColor = .clear
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.delegate = self
@@ -37,6 +39,7 @@ class SearchResultViewController: UIViewController {
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        collectionView.backgroundColor = .clear
         configureDataSource()
 
         cancellable = $searchText
