@@ -60,11 +60,16 @@ class DebugPlugin: NSObject, CommonPlayerPlugin {
     private func startDebug() {
         if debugView == nil {
             debugView = UILabel()
-            debugView?.backgroundColor = UIColor.black.withAlphaComponent(0.8)
-            debugView?.textColor = UIColor.white
+            debugView?.backgroundColor = BLVisualTheme.cardBackground
+            debugView?.textColor = BLVisualTheme.textPrimary
             containerView?.addSubview(debugView!)
             debugView?.numberOfLines = 0
-            debugView?.font = UIFont.systemFont(ofSize: 26)
+            debugView?.font = UIFont.monospacedSystemFont(ofSize: 24, weight: .medium)
+            debugView?.layer.cornerRadius = 14
+            debugView?.layer.cornerCurve = .continuous
+            debugView?.layer.borderWidth = 1
+            debugView?.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+            debugView?.layer.masksToBounds = true
             debugView?.snp.makeConstraints { make in
                 make.top.equalToSuperview().offset(12)
                 make.right.equalToSuperview().offset(-12)

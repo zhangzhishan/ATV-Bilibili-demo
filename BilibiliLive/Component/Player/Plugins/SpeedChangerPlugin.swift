@@ -51,19 +51,21 @@ class SpeedChangerPlugin: NSObject, CommonPlayerPlugin {
 
         if notifyView == nil {
             notifyView = UILabel()
-            notifyView?.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-            notifyView?.textColor = UIColor.white
+            notifyView?.backgroundColor = BLVisualTheme.cardBackground
+            notifyView?.textColor = BLVisualTheme.textPrimary
             containerView?.addSubview(notifyView!)
             notifyView?.numberOfLines = 0
-            notifyView?.layer.cornerRadius = 10 // Set the corner radius
-            notifyView?.layer.masksToBounds = true // Enable masks to bounds
-            notifyView?.font = UIFont.systemFont(ofSize: 26)
+            notifyView?.layer.cornerRadius = 14
+            notifyView?.layer.cornerCurve = .continuous
+            notifyView?.layer.masksToBounds = true
+            notifyView?.layer.borderWidth = 1
+            notifyView?.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+            notifyView?.font = UIFont.systemFont(ofSize: 28, weight: .semibold)
             notifyView?.textAlignment = NSTextAlignment.center
             notifyView?.snp.makeConstraints { make in
-                // make.bottom.equalToSuperview().inset(20) // 20 points from the bottom
-                make.center.equalToSuperview() // Center horizontally
-                make.width.equalTo(300) // Set a width (optional)
-                make.height.equalTo(60) // Set a height (optional)
+                make.center.equalToSuperview()
+                make.width.equalTo(380)
+                make.height.equalTo(72)
             }
         }
         notifyView?.isHidden = false

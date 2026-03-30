@@ -101,6 +101,8 @@ class VideoDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyModernBackgroundIfNeeded()
+        styleViewHierarchy()
         Task { await fetchData() }
 
         pageCollectionView.register(BLTextOnlyCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: BLTextOnlyCollectionViewCell.self))
@@ -160,10 +162,40 @@ class VideoDetailViewController: UIViewController {
     private func setupLoading() {
         effectContainerView.isHidden = true
         view.addSubview(loadingView)
-        loadingView.color = .white
+        loadingView.color = BLVisualTheme.textPrimary
         loadingView.style = .large
         loadingView.startAnimating()
         loadingView.makeConstraintsBindToCenterOfSuperview()
+    }
+
+    private func styleViewHierarchy() {
+        view.backgroundColor = .clear
+        scrollView.backgroundColor = .clear
+        for item in [pageCollectionView, recommandCollectionView, replysCollectionView, ugcCollectionView] {
+            item?.backgroundColor = .clear
+        }
+        [pageView, ugcView].forEach { $0?.backgroundColor = .clear }
+
+        effectContainerView.effect = UIBlurEffect(style: .dark)
+        effectContainerView.layer.cornerRadius = 26
+        effectContainerView.layer.cornerCurve = .continuous
+        effectContainerView.layer.borderWidth = 1
+        effectContainerView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+        effectContainerView.clipsToBounds = true
+
+        backgroundImageView.contentMode = .scaleAspectFill
+        titleLabel.textColor = BLVisualTheme.textPrimary
+        titleLabel.font = UIFont.systemFont(ofSize: 58, weight: .bold)
+        upButton.titleColor = BLVisualTheme.textPrimary
+        for item in [durationLabel, playCountLabel, danmakuLabel, uploadTimeLabel, bvidLabel, followersLabel, ugcLabel] {
+            item?.textColor = BLVisualTheme.textSecondary
+        }
+
+        coverImageView.layer.cornerRadius = 22
+        coverImageView.layer.cornerCurve = .continuous
+        coverImageView.layer.borderWidth = 1
+        coverImageView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+        coverImageView.clipsToBounds = true
     }
 
     func present(from vc: UIViewController, direatlyEnterVideo: Bool = Settings.direatlyEnterVideo) {
@@ -649,21 +681,29 @@ class RelatedVideoCell: BLMotionCollectionViewCell {
     let imageView = UIImageView()
     override func setup() {
         super.setup()
+        contentView.backgroundColor = BLVisualTheme.cardBackground
+        contentView.layer.cornerRadius = 18
+        contentView.layer.cornerCurve = .continuous
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+        contentView.clipsToBounds = true
         contentView.addSubview(imageView)
         contentView.addSubview(titleLabel)
         imageView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
             make.width.equalTo(imageView.snp.height).multipliedBy(14.0 / 9)
         }
-        imageView.layer.cornerRadius = 12
+        imageView.layer.cornerRadius = 14
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         titleLabel.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(imageView.snp.bottom).offset(6)
+            make.left.right.equalToSuperview().inset(12)
+            make.bottom.equalToSuperview().inset(12)
+            make.top.equalTo(imageView.snp.bottom).offset(8)
         }
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
-        titleLabel.font = UIFont.systemFont(ofSize: 28)
+        titleLabel.font = UIFont.systemFont(ofSize: 28, weight: .semibold)
+        titleLabel.textColor = BLVisualTheme.textPrimary
         titleLabel.fadeLength = 60
         stopScroll()
     }
@@ -703,9 +743,11 @@ class DetailLabel: UILabel {
         super.didUpdateFocus(in: context, with: coordinator)
         coordinator.addCoordinatedAnimations {
             if self.isFocused {
-                self.backgroundColor = .white
+                self.backgroundColor = BLVisualTheme.accent
+                self.textColor = .black
             } else {
                 self.backgroundColor = .clear
+                self.textColor = BLVisualTheme.textPrimary
             }
         }
     }
@@ -741,10 +783,13 @@ class NoteDetailView: UIControl {
 
     func setup() {
         addSubview(backgroundView)
-        backgroundView.backgroundColor = UIColor(named: "bgColor")
+        backgroundView.backgroundColor = BLVisualTheme.cardBackground
         backgroundView.layer.shadowOffset = CGSizeMake(0, 10)
-        backgroundView.layer.shadowOpacity = 0.15
+        backgroundView.layer.shadowOpacity = 0.32
         backgroundView.layer.shadowRadius = 16.0
+        backgroundView.layer.shadowColor = BLVisualTheme.focusGlow.cgColor
+        backgroundView.layer.borderWidth = 1
+        backgroundView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
         backgroundView.layer.cornerRadius = 20
         backgroundView.layer.cornerCurve = .continuous
         backgroundView.isHidden = !isFocused
@@ -757,7 +802,7 @@ class NoteDetailView: UIControl {
         addSubview(label)
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 29)
-        label.textColor = UIColor(named: "titleColor")
+        label.textColor = BLVisualTheme.textSecondary
         label.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalToSuperview().offset(14)
@@ -768,6 +813,7 @@ class NoteDetailView: UIControl {
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
         backgroundView.isHidden = !isFocused
+        backgroundView.layer.borderColor = isFocused ? BLVisualTheme.accent.cgColor : BLVisualTheme.cardStroke.cgColor
     }
 
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -803,8 +849,11 @@ class ContentDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyModernBackgroundIfNeeded()
+        view.backgroundColor = .clear
         view.addSubview(titleLabel)
         view.addSubview(contentTextView)
+        titleLabel.textColor = BLVisualTheme.textPrimary
         titleLabel.font = UIFont.systemFont(ofSize: 60, weight: .semibold)
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(80)
@@ -814,6 +863,13 @@ class ContentDetailViewController: UIViewController {
         contentTextView.isScrollEnabled = true
         contentTextView.isUserInteractionEnabled = true
         contentTextView.isSelectable = true
+        contentTextView.backgroundColor = BLVisualTheme.cardBackground
+        contentTextView.layer.cornerRadius = 22
+        contentTextView.layer.cornerCurve = .continuous
+        contentTextView.layer.borderWidth = 1
+        contentTextView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+        contentTextView.textColor = BLVisualTheme.textPrimary
+        contentTextView.font = UIFont.systemFont(ofSize: 35)
         contentTextView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom)
             make.centerX.equalToSuperview()

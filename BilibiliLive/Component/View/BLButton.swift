@@ -29,7 +29,7 @@ class BLCustomButton: BLButton {
         }
     }
 
-    @IBInspectable var titleColor: UIColor = UIColor.black.withAlphaComponent(0.9) {
+    @IBInspectable var titleColor: UIColor = BLVisualTheme.textPrimary {
         didSet { titleLabel.textColor = titleColor }
     }
 
@@ -86,10 +86,10 @@ class BLCustomButton: BLButton {
     private func updateButton() {
         if isFocused {
             imageView.image = highLightImage ?? getImage()
-            imageView.tintColor = .black
+            imageView.tintColor = UIColor.black
         } else {
             imageView.image = getImage()
-            imageView.tintColor = .white
+            imageView.tintColor = BLVisualTheme.textPrimary
         }
     }
 
@@ -109,7 +109,7 @@ class BLCustomTextButton: BLButton {
         didSet { titleLabel.text = title }
     }
 
-    @IBInspectable var titleColor: UIColor = .white {
+    @IBInspectable var titleColor: UIColor = BLVisualTheme.textPrimary {
         didSet { titleLabel.textColor = titleColor }
     }
 
@@ -163,22 +163,26 @@ class BLButton: UIControl {
     func setup() {
         isUserInteractionEnabled = true
         motionEffect = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
-        motionEffect.maximumRelativeValue = 8
-        motionEffect.minimumRelativeValue = -8
+        motionEffect.maximumRelativeValue = 10
+        motionEffect.minimumRelativeValue = -10
         selectedWhiteView.isHidden = !isFocused
         addSubview(effectView)
         effectView.isUserInteractionEnabled = false
-        effectView.layer.cornerRadius = 8
+        effectView.layer.cornerRadius = 12
+        effectView.layer.cornerCurve = .continuous
+        effectView.layer.borderWidth = 1
+        effectView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
         effectView.clipsToBounds = true
         effectView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().priority(.high)
         }
         effectView.contentView.addSubview(selectedWhiteView)
-        selectedWhiteView.backgroundColor = UIColor.white
+        selectedWhiteView.backgroundColor = BLVisualTheme.accent.withAlphaComponent(0.78)
         selectedWhiteView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        layer.shadowColor = BLVisualTheme.focusGlow.cgColor
     }
 
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -197,9 +201,10 @@ class BLButton: UIControl {
                 self.transform = CGAffineTransformMakeScale(1.1, 1.1)
                 let scaleDiff = (self.bounds.size.height * 1.1 - self.bounds.size.height) / 2
                 self.transform = CGAffineTransformTranslate(self.transform, 0, -scaleDiff)
-                self.layer.shadowOffset = CGSizeMake(0, 10)
-                self.layer.shadowOpacity = 0.15
-                self.layer.shadowRadius = 16.0
+                self.layer.shadowOffset = CGSizeMake(0, 14)
+                self.layer.shadowOpacity = 0.45
+                self.layer.shadowRadius = 22.0
+                self.effectView.layer.borderColor = BLVisualTheme.accent.cgColor
                 self.addMotionEffect(self.motionEffect)
             }
         } else {
@@ -208,6 +213,7 @@ class BLButton: UIControl {
                 self.transform = CGAffineTransformIdentity
                 self.layer.shadowOpacity = 0
                 self.layer.shadowOffset = CGSizeMake(0, 0)
+                self.effectView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
                 self.removeMotionEffect(self.motionEffect)
             }
         }
