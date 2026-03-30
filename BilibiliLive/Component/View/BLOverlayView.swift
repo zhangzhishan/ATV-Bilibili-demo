@@ -52,7 +52,7 @@ class BLOverlayView: UIView {
 
     private let badgeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor.black
+        label.textColor = BLVisualTheme.textOnAccent
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.textAlignment = .center
         return label

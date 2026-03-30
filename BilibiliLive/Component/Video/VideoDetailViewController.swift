@@ -744,7 +744,7 @@ class DetailLabel: UILabel {
         coordinator.addCoordinatedAnimations {
             if self.isFocused {
                 self.backgroundColor = BLVisualTheme.accent
-                self.textColor = .black
+                self.textColor = BLVisualTheme.textOnAccent
             } else {
                 self.backgroundColor = .clear
                 self.textColor = BLVisualTheme.textPrimary

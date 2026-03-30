@@ -384,8 +384,8 @@ class SettingsSwitchCell: BLMotionCollectionViewCell {
     func updateColor() {
         if isFocused {
             contentView.backgroundColor = BLVisualTheme.accent.withAlphaComponent(0.8)
-            titleLabel.textColor = UIColor.black
-            descLabel.textColor = UIColor.black
+            titleLabel.textColor = BLVisualTheme.textOnAccent
+            descLabel.textColor = BLVisualTheme.textOnAccent
             contentView.layer.borderColor = BLVisualTheme.accent.cgColor
         } else {
             contentView.backgroundColor = BLVisualTheme.cardBackground

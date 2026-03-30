@@ -86,7 +86,7 @@ class BLCustomButton: BLButton {
     private func updateButton() {
         if isFocused {
             imageView.image = highLightImage ?? getImage()
-            imageView.tintColor = UIColor.black
+            imageView.tintColor = BLVisualTheme.textOnAccent
         } else {
             imageView.image = getImage()
             imageView.tintColor = BLVisualTheme.textPrimary
@@ -113,7 +113,7 @@ class BLCustomTextButton: BLButton {
         didSet { titleLabel.textColor = titleColor }
     }
 
-    @IBInspectable var titleSelectedColor: UIColor = .black {
+    @IBInspectable var titleSelectedColor: UIColor = BLVisualTheme.textOnAccent {
         didSet { titleLabel.textColor = titleColor }
     }
 

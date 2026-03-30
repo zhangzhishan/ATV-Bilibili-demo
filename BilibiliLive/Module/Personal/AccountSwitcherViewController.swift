@@ -33,7 +33,7 @@ final class AccountSwitcherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         applyModernBackgroundIfNeeded()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.35)
+        view.backgroundColor = BLVisualTheme.appBackgroundTop.withAlphaComponent(0.48)
         setupContainer()
         setupHeader()
         setupCollectionView()
@@ -243,7 +243,7 @@ private final class AccountSwitcherCell: UICollectionViewCell {
         badgeLabel.translatesAutoresizingMaskIntoConstraints = false
         badgeLabel.text = "当前使用"
         badgeLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
-        badgeLabel.textColor = UIColor.black
+        badgeLabel.textColor = BLVisualTheme.textOnAccent
         badgeLabel.backgroundColor = BLVisualTheme.accent
         badgeLabel.layer.cornerRadius = 16
         badgeLabel.clipsToBounds = true
@@ -293,7 +293,7 @@ private final class AccountSwitcherCell: UICollectionViewCell {
         } else {
             avatarView.image = UIImage(systemName: "person.crop.circle.fill")
             avatarView.tintColor = BLVisualTheme.textSecondary
-            avatarView.backgroundColor = UIColor.white.withAlphaComponent(0.05)
+            avatarView.backgroundColor = BLVisualTheme.textPrimary.withAlphaComponent(0.05)
         }
         badgeLabel.isHidden = !active
     }

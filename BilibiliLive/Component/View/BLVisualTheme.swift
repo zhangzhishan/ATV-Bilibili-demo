@@ -10,6 +10,7 @@ import UIKit
 enum BLVisualTheme {
     static let accent = UIColor(hex: 0x35C8FF)
     static let accentSecondary = UIColor(hex: 0x7A7DFF)
+    static let textOnAccent = UIColor(hex: 0x06121F)
     static let textPrimary = UIColor(hex: 0xF5F8FF)
     static let textSecondary = UIColor(hex: 0xB7C2DC)
     static let cardBackground = UIColor(hex: 0x141B2F, alpha: 0.9)
