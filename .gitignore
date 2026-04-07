@@ -88,3 +88,5 @@ iOSInjectionProject/
 
 # End of https://www.toptal.com/developers/gitignore/api/swift
 fastlane/README.md
+
+.DS_Store
