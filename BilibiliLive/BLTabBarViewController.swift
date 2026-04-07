@@ -70,14 +70,14 @@ class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         let appearance = UITabBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundEffect = UIBlurEffect(style: .dark)
-        appearance.backgroundColor = UIColor.black.withAlphaComponent(0.28)
+        appearance.backgroundColor = UIColor(hex: 0x0C0E12, alpha: 0.8)
 
         let normalAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: BLVisualTheme.textSecondary,
-            .font: UIFont.systemFont(ofSize: 27, weight: .semibold),
+            .font: UIFont.systemFont(ofSize: 27, weight: .regular),
         ]
         let selectedAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: BLVisualTheme.textPrimary,
+            .foregroundColor: BLVisualTheme.accent,
             .font: UIFont.systemFont(ofSize: 27, weight: .bold),
         ]
 
