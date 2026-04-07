@@ -8,6 +8,20 @@
 import UIKit
 
 class FeedViewController: StandardVideoCollectionViewController<ApiRequest.FeedResp.Items> {
+    private let topNavBar = TopNavigationBar()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view.addSubview(topNavBar)
+        topNavBar.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(100)
+        }
+
+        collectionVC.collectionView.contentInset = UIEdgeInsets(top: 100, left: 0, bottom: 0, right: 0)
+    }
+
     override func setupCollectionView() {
         super.setupCollectionView()
         collectionVC.pageSize = 1

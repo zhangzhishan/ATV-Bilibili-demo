@@ -34,14 +34,21 @@ class FeedCollectionViewCell: BLMotionCollectionViewCell {
             make.top.equalToSuperview()
             make.height.equalTo(imageView.snp.width).multipliedBy(9.0 / 16)
         }
+        let blurEffect = UIBlurEffect(style: .dark)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        contentView.insertSubview(blurView, at: 0)
+        blurView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
         contentView.backgroundColor = BLVisualTheme.cardBackground
-        contentView.layer.cornerRadius = 20
+        contentView.layer.cornerRadius = 24
         contentView.layer.cornerCurve = .continuous
         contentView.layer.borderWidth = 1
         contentView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
         contentView.clipsToBounds = true
 
-        imageView.layer.cornerRadius = 16
+        imageView.layer.cornerRadius = 20
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
 
@@ -60,7 +67,7 @@ class FeedCollectionViewCell: BLMotionCollectionViewCell {
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(imageView.snp.bottom).offset(-2)
         }
-        infoBackgroundView.backgroundColor = BLVisualTheme.cardBackground
+        infoBackgroundView.backgroundColor = .clear
 
         contentView.addSubview(infoView)
         infoView.snp.makeConstraints { make in

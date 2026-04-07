@@ -14,6 +14,8 @@ protocol BLTabBarContentVCProtocol {
 let selectedIndexKey = "BLTabBarViewController.selectedIndex"
 
 class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
+    private let sideNavBar = SideNavigationBar()
+
     static func clearSelected() {
         UserDefaults.standard.removeObject(forKey: selectedIndexKey)
     }
@@ -28,6 +30,19 @@ class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         configureTabBarAppearance()
         delegate = self
         var vcs = [UIViewController]()
+
+        tabBar.isHidden = true
+        tabBar.frame = .zero
+
+        view.addSubview(sideNavBar)
+        sideNavBar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            sideNavBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            sideNavBar.topAnchor.constraint(equalTo: view.topAnchor),
+            sideNavBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            sideNavBar.widthAnchor.constraint(equalToConstant: 120)
+        ])
+
 
         let followVC = FollowsViewController()
         followVC.tabBarItem.title = "关注"
@@ -64,6 +79,18 @@ class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
         setViewControllers(vcs, animated: false)
         selectedIndex = UserDefaults.standard.integer(forKey: selectedIndexKey)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tabBar.isHidden = true
+        tabBar.frame = .zero
+        for v in view.subviews {
+            if v != tabBar && v != sideNavBar && v.tag != 0xB17B71 {
+                v.frame = CGRect(x: 120, y: 0, width: self.view.bounds.width - 120, height: self.view.bounds.height)
+            }
+        }
+
     }
 
     private func configureTabBarAppearance() {
