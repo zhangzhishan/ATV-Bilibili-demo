@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } else {
                 ApiRequest.refreshToken()
             }
-            window?.rootViewController = BLTabBarViewController()
+            window?.rootViewController = MainViewController()
         } else {
             window?.rootViewController = LoginViewController.create()
         }
@@ -51,11 +51,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func showTabBar() {
-        replaceRootViewController(with: BLTabBarViewController(), animated: false)
+        replaceRootViewController(with: MainViewController(), animated: false)
     }
 
     func resetTabBar() {
-        replaceRootViewController(with: BLTabBarViewController(), animated: true)
+        replaceRootViewController(with: MainViewController(), animated: true)
     }
 
     static var shared: AppDelegate {
