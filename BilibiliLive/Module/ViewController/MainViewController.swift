@@ -102,7 +102,8 @@ class MainViewController: UIViewController {
     }
 
     private func setupFocusGuides() {
-        // Focus guide below top bar directing to content
+        // Focus guide below top bar directing to content.
+        // This preserves the existing "top bar -> content" down-navigation.
         let belowBarGuide = UIFocusGuide()
         view.addLayoutGuide(belowBarGuide)
         belowBarGuide.snp.makeConstraints { make in
@@ -111,6 +112,19 @@ class MainViewController: UIViewController {
             make.height.equalTo(10)
         }
         belowBarGuide.preferredFocusEnvironments = [contentView]
+
+        // Symmetric focus bridge from the top edge of content back to the
+        // segmented control. Without this, repeatedly swiping up inside the
+        // shelf content can get trapped in the collection view, especially
+        // when remembersLastFocusedIndexPath restores the last content cell.
+        let aboveContentGuide = UIFocusGuide()
+        view.addLayoutGuide(aboveContentGuide)
+        aboveContentGuide.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(contentView)
+            make.top.equalTo(contentView.snp.top)
+            make.height.equalTo(10)
+        }
+        aboveContentGuide.preferredFocusEnvironments = [segmentedControl]
     }
 
     // MARK: - Child VC Management
