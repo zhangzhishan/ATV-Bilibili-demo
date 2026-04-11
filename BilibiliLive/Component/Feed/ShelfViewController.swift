@@ -23,9 +23,6 @@ class ShelfViewController: UIViewController {
     private var dataSource: UICollectionViewDiffableDataSource<Int, ShelfItem>!
     private var sectionConfigs: [ShelfSectionConfig] = []
 
-    /// Tracks which sections have been loaded so we can hide empty ones.
-    private var loadedSections: Set<Int> = []
-
     /// Called when a card is tapped. Override point for subclasses.
     var didSelect: ((any DisplayData) -> Void)?
 
@@ -42,7 +39,7 @@ class ShelfViewController: UIViewController {
 
     /// Triggers async data loading for all sections.
     func loadAllSections() {
-        loadedSections.removeAll()
+        resetSnapshot()
         for index in sectionConfigs.indices {
             loadSection(at: index)
         }
@@ -56,10 +53,9 @@ class ShelfViewController: UIViewController {
             do {
                 let items = try await config.loadData()
                 let contentItems = items.prefix(10).map { ShelfItem.content(AnyDispplayData(data: $0)) }
-                loadedSections.insert(index)
 
                 if contentItems.isEmpty {
-                    // Hide section entirely when no data
+                    // Hide section entirely when no data.
                     applyItems([], toSection: index)
                 } else {
                     var wrapped = Array(contentItems)
@@ -68,7 +64,6 @@ class ShelfViewController: UIViewController {
                 }
             } catch {
                 Logger.warn("Shelf section '\(config.title)' load failed: \(error)")
-                loadedSections.insert(index)
                 // Hide section on error
                 applyItems([], toSection: index)
             }
@@ -101,39 +96,10 @@ class ShelfViewController: UIViewController {
         let config = UICollectionViewCompositionalLayoutConfiguration()
         config.interSectionSpacing = 50
 
-        return UICollectionViewCompositionalLayout(sectionProvider: { [weak self] sectionIndex, environment in
-            guard let self else { return nil }
-
-            // For sections with no items, return a minimal zero-height section
-            let snapshot = self.dataSource?.snapshot()
-            let itemCount = snapshot.map { sn in
-                sn.sectionIdentifiers.contains(sectionIndex)
-                    ? sn.itemIdentifiers(inSection: sectionIndex).count
-                    : 0
-            } ?? 0
-
-            if itemCount == 0 {
-                return self.makeEmptySection()
-            }
-            return self.makeShelfSection(environment: environment)
+        return UICollectionViewCompositionalLayout(sectionProvider: { [weak self] _, environment in
+            guard self != nil else { return nil }
+            return self?.makeShelfSection(environment: environment)
         }, configuration: config)
-    }
-
-    private func makeEmptySection() -> NSCollectionLayoutSection {
-        // Collapsed section with zero height
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(0)
-        )
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .zero
-        return section
     }
 
     private func makeShelfSection(environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
@@ -208,28 +174,52 @@ class ShelfViewController: UIViewController {
         let headerRegistration = UICollectionView.SupplementaryRegistration<ShelfSectionHeaderView>(
             elementKind: ShelfSectionHeaderView.elementKind
         ) { [weak self] headerView, _, indexPath in
-            guard let self, indexPath.section < self.sectionConfigs.count else { return }
-            headerView.setTitle(self.sectionConfigs[indexPath.section].title)
+            guard let self, let configIndex = self.configIndex(forVisibleSection: indexPath.section) else { return }
+            headerView.setTitle(self.sectionConfigs[configIndex].title)
         }
 
         dataSource.supplementaryViewProvider = { collectionView, _, indexPath in
             collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
         }
 
-        // Initialize empty snapshot with all sections
+        resetSnapshot()
+    }
+
+    private func resetSnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<Int, ShelfItem>()
-        for i in sectionConfigs.indices {
-            snapshot.appendSections([i])
-        }
         dataSource.apply(snapshot, animatingDifferences: false)
     }
 
+    private func configIndex(forVisibleSection visibleSection: Int) -> Int? {
+        let sections = dataSource.snapshot().sectionIdentifiers
+        guard visibleSection >= 0, visibleSection < sections.count else { return nil }
+        return sections[visibleSection]
+    }
+
     private func applyItems(_ items: [ShelfItem], toSection section: Int) {
-        var snapshot = dataSource.snapshot()
-        let existing = snapshot.itemIdentifiers(inSection: section)
-        snapshot.deleteItems(existing)
-        snapshot.appendItems(items, toSection: section)
-        dataSource.apply(snapshot, animatingDifferences: true)
+        let currentSnapshot = dataSource.snapshot()
+        var sectionItems: [Int: [ShelfItem]] = [:]
+
+        for existingSection in currentSnapshot.sectionIdentifiers {
+            if existingSection == section {
+                continue
+            }
+            sectionItems[existingSection] = currentSnapshot.itemIdentifiers(inSection: existingSection)
+        }
+
+        if !items.isEmpty {
+            sectionItems[section] = items
+        }
+
+        var newSnapshot = NSDiffableDataSourceSnapshot<Int, ShelfItem>()
+        for configIndex in sectionConfigs.indices where sectionItems[configIndex] != nil {
+            newSnapshot.appendSections([configIndex])
+            if let sectionItems = sectionItems[configIndex] {
+                newSnapshot.appendItems(sectionItems, toSection: configIndex)
+            }
+        }
+
+        dataSource.apply(newSnapshot, animatingDifferences: true)
     }
 }
 
