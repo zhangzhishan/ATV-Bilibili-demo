@@ -175,24 +175,39 @@ class FeedCollectionViewController: UIViewController {
     private func makeGridLayoutSection() -> NSCollectionLayoutSection {
         let style = styleOverride ?? Settings.displayStyle
         let heightDimension = NSCollectionLayoutDimension.estimated(style.heightEstimated)
-        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(style.fractionalWidth),
+
+        // Hero Item (Large, 100% width)
+        let heroItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(600)
+        ))
+        heroItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 30, bottom: 24, trailing: 30)
+
+        // Standard Grid Item
+        let standardItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.25),
             heightDimension: heightDimension
         ))
-        let hSpacing: CGFloat = style == .large ? 35 : 30
-        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: hSpacing, bottom: 0, trailing: hSpacing)
-        let group = NSCollectionLayoutGroup.horizontal(
+        standardItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 30, bottom: 24, trailing: 30)
+
+        // Standard Group (4 items across)
+        let standardGroup = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
                 heightDimension: heightDimension
             ),
-            repeatingSubitem: item,
-            count: style.feedColCount
+            repeatingSubitem: standardItem,
+            count: 4
+        )
+
+        let containerGroup = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(1000)),
+            subitems: [heroItem, standardGroup]
         )
         let vSpacing: CGFloat = style == .large ? 24 : 16
         let baseSpacing: CGFloat = style == .sideBar ? 24 : 0
-        group.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: .fixed(baseSpacing), top: .fixed(vSpacing), trailing: .fixed(0), bottom: .fixed(vSpacing))
-        let section = NSCollectionLayoutSection(group: group)
+
+        let section = NSCollectionLayoutSection(group: containerGroup)
         if baseSpacing > 0 {
             section.contentInsets = NSDirectionalEdgeInsets(top: baseSpacing, leading: 0, bottom: 0, trailing: 0)
         } else {

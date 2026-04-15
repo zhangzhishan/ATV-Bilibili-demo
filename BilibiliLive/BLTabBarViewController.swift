@@ -14,6 +14,8 @@ protocol BLTabBarContentVCProtocol {
 let selectedIndexKey = "BLTabBarViewController.selectedIndex"
 
 class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
+    private let sideNavBar = SideNavigationBar()
+
     static func clearSelected() {
         UserDefaults.standard.removeObject(forKey: selectedIndexKey)
     }
@@ -28,6 +30,19 @@ class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         configureTabBarAppearance()
         delegate = self
         var vcs = [UIViewController]()
+
+        tabBar.isHidden = true
+        tabBar.frame = .zero
+
+        view.addSubview(sideNavBar)
+        sideNavBar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            sideNavBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            sideNavBar.topAnchor.constraint(equalTo: view.topAnchor),
+            sideNavBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            sideNavBar.widthAnchor.constraint(equalToConstant: 120)
+        ])
+
 
         let followVC = FollowsViewController()
         followVC.tabBarItem.title = "关注"
@@ -66,18 +81,30 @@ class BLTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         selectedIndex = UserDefaults.standard.integer(forKey: selectedIndexKey)
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tabBar.isHidden = true
+        tabBar.frame = .zero
+        for v in view.subviews {
+            if v != tabBar && v != sideNavBar && v.tag != 0xB17B71 {
+                v.frame = CGRect(x: 120, y: 0, width: self.view.bounds.width - 120, height: self.view.bounds.height)
+            }
+        }
+
+    }
+
     private func configureTabBarAppearance() {
         let appearance = UITabBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundEffect = UIBlurEffect(style: .dark)
-        appearance.backgroundColor = UIColor.black.withAlphaComponent(0.28)
+        appearance.backgroundColor = UIColor(hex: 0x0C0E12, alpha: 0.8)
 
         let normalAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: BLVisualTheme.textSecondary,
-            .font: UIFont.systemFont(ofSize: 27, weight: .semibold),
+            .font: UIFont.systemFont(ofSize: 27, weight: .regular),
         ]
         let selectedAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: BLVisualTheme.textPrimary,
+            .foregroundColor: BLVisualTheme.accent,
             .font: UIFont.systemFont(ofSize: 27, weight: .bold),
         ]
 

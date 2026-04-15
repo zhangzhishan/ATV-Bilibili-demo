@@ -8,17 +8,17 @@
 import UIKit
 
 enum BLVisualTheme {
-    static let accent = UIColor(hex: 0x35C8FF)
-    static let accentSecondary = UIColor(hex: 0x7A7DFF)
-    static let textOnAccent = UIColor(hex: 0x06121F)
-    static let textPrimary = UIColor(hex: 0xF5F8FF)
-    static let textSecondary = UIColor(hex: 0xB7C2DC)
-    static let cardBackground = UIColor(hex: 0x141B2F, alpha: 0.9)
-    static let cardStroke = UIColor.white.withAlphaComponent(0.12)
-    static let focusGlow = UIColor(hex: 0x5CCEFF, alpha: 0.7)
-    static let sidebarBackground = UIColor(hex: 0x111A2E, alpha: 0.62)
-    static let appBackgroundTop = UIColor(hex: 0x0A1020)
-    static let appBackgroundBottom = UIColor(hex: 0x111C36)
+    static let accent = UIColor(hex: 0x48C2F9)
+    static let accentSecondary = UIColor(hex: 0x34B4EA)
+    static let textOnAccent = UIColor(hex: 0x00394F)
+    static let textPrimary = UIColor(hex: 0xF6F6FC)
+    static let textSecondary = UIColor(hex: 0xAAABB0)
+    static let cardBackground = UIColor(hex: 0x171A1F, alpha: 0.6)
+    static let cardStroke = UIColor(hex: 0x46484D, alpha: 0.3)
+    static let focusGlow = UIColor(hex: 0x48C2F9, alpha: 0.15)
+    static let sidebarBackground = UIColor(hex: 0x111318)
+    static let appBackgroundTop = UIColor(hex: 0x0C0E12)
+    static let appBackgroundBottom = UIColor(hex: 0x0C0E12)
 }
 
 final class BLGradientBackgroundView: UIView {
@@ -42,12 +42,11 @@ final class BLGradientBackgroundView: UIView {
         isUserInteractionEnabled = false
         gradientLayer.colors = [
             BLVisualTheme.appBackgroundTop.cgColor,
-            UIColor(hex: 0x0D1730).cgColor,
             BLVisualTheme.appBackgroundBottom.cgColor,
         ]
-        gradientLayer.locations = [0.0, 0.45, 1.0]
-        gradientLayer.startPoint = CGPoint(x: 0.15, y: 0.0)
-        gradientLayer.endPoint = CGPoint(x: 0.85, y: 1.0)
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
     }
 }
 
