@@ -81,6 +81,10 @@ class SettingsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleInterfaceTextSizeChanged),
+                                               name: .interfaceTextSizeDidChange,
+                                               object: nil)
         applyModernBackgroundIfNeeded()
         view.backgroundColor = .clear
         view.addSubview(collectionView)
@@ -97,6 +101,10 @@ class SettingsViewController: UIViewController {
 
         configureDataSource()
         setupData()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     private func configureDataSource() {
@@ -147,6 +155,14 @@ class SettingsViewController: UIViewController {
             }
 
             SectionModel(title: "界面") {
+                Actions(title: "界面字号", message: "当前设置页会立即更新，其他界面重新进入后生效",
+                        current: Settings.interfaceTextSize.title,
+                        options: InterfaceTextScale.allCases,
+                        optionString: InterfaceTextScale.allCases.map({ $0.title }))
+                {
+                    Settings.interfaceTextSize = $0
+                    NotificationCenter.default.post(name: .interfaceTextSizeDidChange, object: nil)
+                }
                 Actions(title: "视频每行显示个数", message: "重启app生效",
                         current: Settings.displayStyle.desp,
                         options: FeedDisplayStyle.allCases.filter({ !$0.hideInSetting }),
@@ -243,6 +259,11 @@ class SettingsViewController: UIViewController {
                 }
             }
         }
+    }
+
+    @objc private func handleInterfaceTextSizeChanged() {
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.reloadData()
     }
 }
 
@@ -346,6 +367,7 @@ class SettingsSwitchCell: BLMotionCollectionViewCell {
     func set(with model: SettingsViewController.CellModel) {
         titleLabel.text = model.title
         descLabel.text = model.desp()
+        applyTextStyle()
         model.updateAction = { [weak self] in
             self?.descLabel.text = model.desp()
         }
@@ -375,10 +397,14 @@ class SettingsSwitchCell: BLMotionCollectionViewCell {
         }
 
         descLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-        titleLabel.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
-        descLabel.font = UIFont.systemFont(ofSize: 28, weight: .medium)
+        applyTextStyle()
 
         updateColor()
+    }
+
+    func applyTextStyle() {
+        titleLabel.font = BLVisualTheme.font(size: 30, weight: .semibold)
+        descLabel.font = BLVisualTheme.font(size: 28, weight: .medium)
     }
 
     func updateColor() {
@@ -411,13 +437,17 @@ class SettingsHeaderView: UICollectionReusableView {
 
     func setup() {
         addSubview(label)
-        label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+        applyTextStyle()
         label.textColor = BLVisualTheme.textSecondary
         label.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
             make.top.equalToSuperview().offset(20)
             make.bottom.equalToSuperview().offset(-20)
         }
+    }
+
+    func applyTextStyle() {
+        label.font = BLVisualTheme.font(size: 24, weight: .semibold)
     }
 }
 

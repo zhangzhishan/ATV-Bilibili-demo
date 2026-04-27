@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 import SwiftUI
+import UIKit
 
 enum FeedDisplayStyle: Codable, CaseIterable {
     case large
@@ -44,6 +45,9 @@ enum Settings {
 
     @UserDefaultCodable("Settings.danmuSize", defaultValue: .size_36)
     static var danmuSize: DanmuSize
+
+    @UserDefaultCodable("Settings.interfaceTextSize", defaultValue: .normal)
+    static var interfaceTextSize: InterfaceTextScale
 
     @UserDefaultCodable("Settings.danmuAILevel", defaultValue: 1)
     static var danmuAILevel: Int32
@@ -213,6 +217,43 @@ enum DanmuSize: String, Codable, CaseIterable {
     }
 }
 
+enum InterfaceTextScale: String, Codable, CaseIterable {
+    case small
+    case normal
+    case large
+    case extraLarge
+
+    var title: String {
+        switch self {
+        case .small:
+            return "小 (0.8x)"
+        case .normal:
+            return "默认 (1.0x)"
+        case .large:
+            return "大 (1.2x)"
+        case .extraLarge:
+            return "超大 (1.5x)"
+        }
+    }
+
+    var scale: CGFloat {
+        switch self {
+        case .small:
+            return 0.8
+        case .normal:
+            return 1.0
+        case .large:
+            return 1.2
+        case .extraLarge:
+            return 1.5
+        }
+    }
+
+    func scaled(_ size: CGFloat) -> CGFloat {
+        size * scale
+    }
+}
+
 enum DanmuAlpha: Double, Codable, CaseIterable {
     case alpha_03 = 0.3
     case alpha_04 = 0.4
@@ -284,6 +325,10 @@ extension DanmuArea {
             return 1
         }
     }
+}
+
+extension Notification.Name {
+    static let interfaceTextSizeDidChange = Notification.Name("Settings.interfaceTextSizeDidChange")
 }
 
 enum MediaQualityEnum: Codable, CaseIterable {

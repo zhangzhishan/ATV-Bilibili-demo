@@ -34,7 +34,7 @@ class BLTextOnlyCollectionViewCell: BLMotionCollectionViewCell {
         }
         titleLabel.textColor = BLVisualTheme.textPrimary
         titleLabel.numberOfLines = 2
-        titleLabel.font = UIFont.systemFont(ofSize: 26, weight: .medium)
+        titleLabel.font = BLVisualTheme.font(size: 26, weight: .medium)
         effectView.layer.cornerRadius = 16
         effectView.layer.cornerCurve = .continuous
         effectView.layer.borderWidth = 1

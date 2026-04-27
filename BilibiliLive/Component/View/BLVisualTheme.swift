@@ -19,6 +19,14 @@ enum BLVisualTheme {
     static let sidebarBackground = UIColor(hex: 0x111A2E, alpha: 0.62)
     static let appBackgroundTop = UIColor(hex: 0x0A1020)
     static let appBackgroundBottom = UIColor(hex: 0x111C36)
+
+    static func scaledFontSize(_ size: CGFloat) -> CGFloat {
+        Settings.interfaceTextSize.scaled(size)
+    }
+
+    static func font(size: CGFloat, weight: UIFont.Weight = .regular) -> UIFont {
+        UIFont.systemFont(ofSize: scaledFontSize(size), weight: weight)
+    }
 }
 
 final class BLGradientBackgroundView: UIView {
