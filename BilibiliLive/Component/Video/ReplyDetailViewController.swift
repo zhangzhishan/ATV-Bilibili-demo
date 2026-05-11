@@ -32,7 +32,7 @@ class ReplyDetailViewController: UIViewController {
 
         setUpViews()
         replyLabel.setTitle(reply.content.message, for: .normal)
-        replyLabel.setTitleColor(UIColor.label, for: .normal)
+        replyLabel.setTitleColor(BLVisualTheme.commentText, for: .normal)
         if let attr = reply.createAttributedString(displayView: replyLabel) {
             replyLabel.setAttributedTitle(attr, for: .normal)
         }
@@ -69,9 +69,12 @@ class ReplyDetailViewController: UIViewController {
     }
 
     private func setUpViews() {
+        view.backgroundColor = BLVisualTheme.commentDetailBackground
+
         scrollView = {
             let scroll = UIScrollView()
             view.addSubview(scroll)
+            scroll.backgroundColor = .clear
             scroll.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
             }
@@ -92,6 +95,7 @@ class ReplyDetailViewController: UIViewController {
             let label = UILabel()
             contentView.addSubview(label)
             label.font = .boldSystemFont(ofSize: 60)
+            label.textColor = BLVisualTheme.textPrimary
             label.text = "评论"
 
             label.snp.makeConstraints { make in
@@ -107,8 +111,13 @@ class ReplyDetailViewController: UIViewController {
             contentView.addSubview(label)
             label.titleLabel?.numberOfLines = 0
             label.titleLabel?.textAlignment = .left
-            label.titleLabel?.font = .preferredFont(forTextStyle: .headline)
+            label.titleLabel?.font = BLVisualTheme.font(size: 34, weight: .medium)
             label.contentHorizontalAlignment = .left
+            label.contentEdgeInsets = UIEdgeInsets(top: 30, left: 36, bottom: 30, right: 36)
+            label.backgroundColor = BLVisualTheme.commentCardBackground
+            label.layer.cornerRadius = 18
+            label.layer.borderWidth = 1
+            label.layer.borderColor = BLVisualTheme.cardStroke.cgColor
             label.setContentCompressionResistancePriority(.required, for: .vertical)
             label.snp.makeConstraints { make in
                 make.top.equalTo(self.titleLabel.snp.bottom).offset(60)
@@ -163,6 +172,7 @@ class ReplyDetailViewController: UIViewController {
             contentView.addSubview(collectionView)
             collectionView.dataSource = self
             collectionView.delegate = self
+            collectionView.backgroundColor = .clear
             collectionView.register(UINib(nibName: ReplyCell.identifier, bundle: nil), forCellWithReuseIdentifier: ReplyCell.identifier)
 
             collectionView.snp.makeConstraints { make in

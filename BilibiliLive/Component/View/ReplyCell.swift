@@ -14,6 +14,19 @@ class ReplyCell: UICollectionViewCell {
     @IBOutlet var userNameLabel: UILabel!
     @IBOutlet var contenLabel: UILabel!
 
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        if let cardContentView = contenLabel.superview {
+            cardContentView.backgroundColor = BLVisualTheme.commentCardBackground
+            cardContentView.layer.borderColor = BLVisualTheme.cardStroke.cgColor
+            cardContentView.layer.borderWidth = 1
+        }
+        userNameLabel.font = BLVisualTheme.font(size: 24, weight: .semibold)
+        userNameLabel.textColor = BLVisualTheme.commentUserName
+        contenLabel.font = BLVisualTheme.font(size: 26, weight: .medium)
+        contenLabel.textColor = BLVisualTheme.commentText
+    }
+
     func config(replay: Replys.Reply) {
         avatarImageView.kf.setImage(
             with: URL(string: replay.member.avatar),
@@ -24,6 +37,7 @@ class ReplyCell: UICollectionViewCell {
             ]
         )
         userNameLabel.text = replay.member.uname
+        contenLabel.attributedText = nil
         if let attr = replay.createAttributedString(displayView: contenLabel) {
             contenLabel.attributedText = attr
         } else {
