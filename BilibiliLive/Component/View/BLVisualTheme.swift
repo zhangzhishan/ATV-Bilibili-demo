@@ -117,10 +117,11 @@ extension UISearchController {
         searchBar.barTintColor = BLVisualTheme.inputBackground
         searchBar.searchBarStyle = .minimal
 
-        let searchTextField = searchBar.searchTextField
-        searchTextField.applyBLFormTheme()
-        searchTextField.leftView?.applyBLInputIconTint(color: BLVisualTheme.textSecondary)
-        searchTextField.rightView?.applyBLInputIconTint(color: BLVisualTheme.textSecondary)
+        guard let textField = searchBar.blSearchTextField else { return }
+
+        textField.applyBLFormTheme()
+        textField.leftView?.applyBLInputIconTint(color: BLVisualTheme.textSecondary)
+        textField.rightView?.applyBLInputIconTint(color: BLVisualTheme.textSecondary)
     }
 }
 
@@ -140,6 +141,20 @@ extension UIAlertController {
 }
 
 private extension UIView {
+    func blFirstDescendant<T: UIView>(of type: T.Type) -> T? {
+        for subview in subviews {
+            if let match = subview as? T {
+                return match
+            }
+
+            if let match = subview.blFirstDescendant(of: type) {
+                return match
+            }
+        }
+
+        return nil
+    }
+
     func applyBLInputIconTint(color: UIColor) {
         tintColor = color
 
@@ -157,5 +172,11 @@ private extension UIView {
         }
 
         subviews.forEach { $0.applyBLInputIconTint(color: color) }
+    }
+}
+
+private extension UISearchBar {
+    var blSearchTextField: UITextField? {
+        blFirstDescendant(of: UITextField.self)
     }
 }
