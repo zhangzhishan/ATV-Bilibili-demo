@@ -206,6 +206,7 @@ class SettingsViewController: UIViewController {
                             let toast = await VideoDanmuFilter.shared.update()
                             let alert = UIAlertController(title: "同步结果", message: toast, preferredStyle: .alert)
                             alert.addAction(.init(title: "Ok", style: .cancel))
+                            alert.applyBLTheme()
                             self.present(alert, animated: true)
                         }
                     }
@@ -299,6 +300,7 @@ extension SettingsViewController {
             }
             let cancelAction = UIAlertAction(title: nil, style: .cancel)
             alert.addAction(cancelAction)
+            alert.applyBLTheme()
             self?.present(alert, animated: true)
         }
     }
@@ -312,7 +314,7 @@ extension SettingsViewController {
     {
         return CellModel(title: title, desp: current) { [weak self] update in
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alert.addTextField { textField in
+            alert.addBLTextField { textField in
                 textField.text = current
                 textField.keyboardType = .URL
                 textField.placeholder = placeholder
@@ -327,6 +329,7 @@ extension SettingsViewController {
 
             let cancelAction = UIAlertAction(title: nil, style: .cancel)
             alert.addAction(cancelAction)
+            alert.applyBLTheme()
             self?.present(alert, animated: true)
         }
     }

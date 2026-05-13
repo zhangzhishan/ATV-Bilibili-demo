@@ -13,9 +13,11 @@ enum BLVisualTheme {
     static let textOnAccent = UIColor(hex: 0x06121F)
     static let textPrimary = UIColor(hex: 0xF5F8FF)
     static let textSecondary = UIColor(hex: 0xB7C2DC)
+    static let textPlaceholder = UIColor(hex: 0x8A97B5)
     static let cardBackground = UIColor(hex: 0x141B2F, alpha: 0.9)
     static let commentCardBackground = UIColor(hex: 0x0A1020, alpha: 0.96)
     static let commentDetailBackground = UIColor(hex: 0x050914, alpha: 0.98)
+    static let inputBackground = UIColor(hex: 0x18233B, alpha: 0.96)
     static let commentUserName = UIColor(hex: 0xA7D9FF)
     static let commentText = UIColor(hex: 0xF8FBFF)
     static let cardStroke = UIColor.white.withAlphaComponent(0.12)
@@ -78,5 +80,82 @@ extension UIViewController {
             backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+    }
+}
+
+extension UITextField {
+    func applyBLFormTheme() {
+        overrideUserInterfaceStyle = .dark
+        backgroundColor = BLVisualTheme.inputBackground
+        textColor = BLVisualTheme.textPrimary
+        tintColor = BLVisualTheme.accent
+        keyboardAppearance = .dark
+        layer.cornerRadius = 12
+        layer.cornerCurve = .continuous
+        layer.masksToBounds = true
+
+        defaultTextAttributes[.foregroundColor] = BLVisualTheme.textPrimary
+
+        if let placeholder, !placeholder.isEmpty {
+            attributedPlaceholder = NSAttributedString(
+                string: placeholder,
+                attributes: [.foregroundColor: BLVisualTheme.textPlaceholder]
+            )
+        }
+
+        leftView?.applyBLInputIconTint(color: BLVisualTheme.textSecondary)
+        rightView?.applyBLInputIconTint(color: BLVisualTheme.textSecondary)
+        subviews.forEach { $0.applyBLInputIconTint(color: BLVisualTheme.textPrimary) }
+    }
+}
+
+extension UISearchController {
+    func applyBLTheme() {
+        overrideUserInterfaceStyle = .dark
+        searchBar.overrideUserInterfaceStyle = .dark
+        searchBar.tintColor = BLVisualTheme.accent
+        searchBar.barTintColor = BLVisualTheme.inputBackground
+        searchBar.searchBarStyle = .minimal
+
+        let searchTextField = searchBar.searchTextField
+        searchTextField.applyBLFormTheme()
+        searchTextField.leftView?.applyBLInputIconTint(color: BLVisualTheme.textSecondary)
+        searchTextField.rightView?.applyBLInputIconTint(color: BLVisualTheme.textSecondary)
+    }
+}
+
+extension UIAlertController {
+    func applyBLTheme() {
+        overrideUserInterfaceStyle = .dark
+        view.tintColor = BLVisualTheme.accent
+        textFields?.forEach { $0.applyBLFormTheme() }
+    }
+
+    func addBLTextField(configurationHandler: ((UITextField) -> Void)? = nil) {
+        addTextField { textField in
+            configurationHandler?(textField)
+            textField.applyBLFormTheme()
+        }
+    }
+}
+
+private extension UIView {
+    func applyBLInputIconTint(color: UIColor) {
+        tintColor = color
+
+        if let imageView = self as? UIImageView {
+            imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
+            imageView.tintColor = color
+        }
+
+        if let button = self as? UIButton {
+            button.tintColor = color
+            let states: [UIControl.State] = [.normal, .highlighted, .focused, .selected]
+            states.forEach { state in
+                button.setImage(button.image(for: state)?.withRenderingMode(.alwaysTemplate), for: state)
+            }
+        }
+
+        subviews.forEach { $0.applyBLInputIconTint(color: color) }
     }
 }

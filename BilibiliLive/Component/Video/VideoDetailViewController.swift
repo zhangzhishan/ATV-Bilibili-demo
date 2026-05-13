@@ -216,6 +216,7 @@ class VideoDetailViewController: UIViewController {
         alertVC.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: { [weak self] action in
             self?.dismiss(animated: true)
         }))
+        alertVC.applyBLTheme()
         present(alertVC, animated: true, completion: nil)
     }
 
@@ -506,6 +507,7 @@ class VideoDetailViewController: UIViewController {
             })
         }
         alert.addAction(UIAlertAction(title: "取消", style: .cancel))
+        alert.applyBLTheme()
         present(alert, animated: true)
     }
 
@@ -530,6 +532,7 @@ class VideoDetailViewController: UIViewController {
                 })
             }
             alert.addAction(UIAlertAction(title: "取消", style: .cancel))
+            alert.applyBLTheme()
             present(alert, animated: true)
         }
     }

@@ -36,6 +36,7 @@ class ToViewViewController: StandardVideoCollectionViewController<ToViewData> {
             )
             alert.addAction(deleteAction)
             alert.addAction(cancelAction)
+            alert.applyBLTheme()
             self.present(alert, animated: true, completion: nil)
         }
     }

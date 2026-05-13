@@ -83,6 +83,7 @@ class StandardVideoCollectionViewController<T: PlayableData>: UIViewController, 
         } catch let err {
             let alert = UIAlertController(title: "Error", message: "\(err)", preferredStyle: .alert)
             alert.addAction(.init(title: "Ok", style: .cancel))
+            alert.applyBLTheme()
             present(alert, animated: true)
         }
     }

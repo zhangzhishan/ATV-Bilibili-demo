@@ -69,6 +69,7 @@ class CommonPlayerViewController: UIViewController {
             self?.dismiss(animated: true, completion: nil)
         }
         alertController.addAction(actionOk)
+        alertController.applyBLTheme()
         present(alertController, animated: true, completion: nil)
     }
 

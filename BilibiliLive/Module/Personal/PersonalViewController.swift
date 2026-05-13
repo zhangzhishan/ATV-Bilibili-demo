@@ -69,7 +69,11 @@ class PersonalViewController: UIViewController, BLTabBarContentVCProtocol {
             let resultVC = SearchResultViewController()
             let searchVC = UISearchController(searchResultsController: resultVC)
             searchVC.searchResultsUpdater = resultVC
-            self?.present(UISearchContainerViewController(searchController: searchVC), animated: true)
+            searchVC.applyBLTheme()
+
+            let containerVC = UISearchContainerViewController(searchController: searchVC)
+            containerVC.overrideUserInterfaceStyle = .dark
+            self?.present(containerVC, animated: true)
         }))
         cellModels.append(CellModel(title: "追番追剧", autoSelect: false, action: { [weak self] in
             let controller = FollowBangumiViewController()
@@ -118,6 +122,7 @@ class PersonalViewController: UIViewController, BLTabBarContentVCProtocol {
             }
         })
         alert.addAction(UIAlertAction(title: "取消", style: .cancel))
+        alert.applyBLTheme()
         present(alert, animated: true)
     }
 

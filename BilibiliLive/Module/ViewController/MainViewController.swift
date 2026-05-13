@@ -183,7 +183,11 @@ class MainViewController: UIViewController {
         let resultVC = SearchResultViewController()
         let searchVC = UISearchController(searchResultsController: resultVC)
         searchVC.searchResultsUpdater = resultVC
-        present(UISearchContainerViewController(searchController: searchVC), animated: true)
+        searchVC.applyBLTheme()
+
+        let containerVC = UISearchContainerViewController(searchController: searchVC)
+        containerVC.overrideUserInterfaceStyle = .dark
+        present(containerVC, animated: true)
     }
 
     // MARK: - Account
