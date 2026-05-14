@@ -64,6 +64,8 @@ class MainViewController: UIViewController {
 
         // Search button (left)
         searchButton.image = UIImage(systemName: "magnifyingglass")
+        searchButton.accessibilityLabel = "搜索"
+        searchButton.accessibilityHint = "打开搜索并支持 Siri Remote 系统听写。"
         topBar.addSubview(searchButton)
         searchButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(60)
@@ -181,12 +183,7 @@ class MainViewController: UIViewController {
 
     private func presentSearch() {
         let resultVC = SearchResultViewController()
-        let searchVC = UISearchController(searchResultsController: resultVC)
-        searchVC.searchResultsUpdater = resultVC
-        searchVC.applyBLTheme()
-
-        let containerVC = UISearchContainerViewController(searchController: searchVC)
-        containerVC.overrideUserInterfaceStyle = .dark
+        let containerVC = BLSearchPresentation.makeSearchContainer(resultsController: resultVC)
         present(containerVC, animated: true)
     }
 

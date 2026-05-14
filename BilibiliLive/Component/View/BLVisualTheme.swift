@@ -175,7 +175,7 @@ private extension UIView {
     }
 }
 
-private extension UISearchBar {
+extension UISearchBar {
     var blSearchTextField: UITextField? {
         blFirstDescendant(of: UITextField.self)
     }

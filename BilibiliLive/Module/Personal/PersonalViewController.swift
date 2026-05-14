@@ -67,12 +67,7 @@ class PersonalViewController: UIViewController, BLTabBarContentVCProtocol {
         cellModels.append(CellModel(title: "搜索", autoSelect: false, action: {
             [weak self] in
             let resultVC = SearchResultViewController()
-            let searchVC = UISearchController(searchResultsController: resultVC)
-            searchVC.searchResultsUpdater = resultVC
-            searchVC.applyBLTheme()
-
-            let containerVC = UISearchContainerViewController(searchController: searchVC)
-            containerVC.overrideUserInterfaceStyle = .dark
+            let containerVC = BLSearchPresentation.makeSearchContainer(resultsController: resultVC)
             self?.present(containerVC, animated: true)
         }))
         cellModels.append(CellModel(title: "追番追剧", autoSelect: false, action: { [weak self] in
