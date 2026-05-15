@@ -8,8 +8,8 @@
 import UIKit
 
 enum BLSearchPresentation {
-    static let placeholder = "搜索内容，或按住 Siri Remote 麦克风听写"
-    static let accessibilityHint = "按住 Siri Remote 上的麦克风按钮可使用系统听写输入关键词。"
+    static let placeholder = "搜索内容，听写请先切换繁体中文键盘"
+    static let accessibilityHint = "按住 Siri Remote 麦克风听写前，请先切换到繁体中文键盘。"
 
     static func makeSearchContainer(
         resultsController: UIViewController & UISearchResultsUpdating
