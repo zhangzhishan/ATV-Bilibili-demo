@@ -127,6 +127,9 @@ enum Settings {
     @UserDefaultCodable("Settings.danmuStrokeAlpha", defaultValue: .alpha_08)
     static var danmuStrokeAlpha: DanmuStrokeAlpha
 
+    @UserDefault("Settings.search.autoConvertTraditionalChineseToSimplified", defaultValue: true)
+    static var searchAutoConvertTraditionalChineseToSimplified: Bool
+
     @UserDefaultCodable("Search.histories", defaultValue: [])
     static var searchHistories: [String]
 }

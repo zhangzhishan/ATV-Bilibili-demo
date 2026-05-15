@@ -131,6 +131,7 @@ class SettingsViewController: UIViewController {
                 }
 
                 Toggle(title: "热门个性化推荐", setting: Settings.requestHotWithoutCookie, onChange: Settings.requestHotWithoutCookie.toggle())
+                Toggle(title: "搜索自动繁转简", setting: Settings.searchAutoConvertTraditionalChineseToSimplified, onChange: Settings.searchAutoConvertTraditionalChineseToSimplified.toggle())
             }
 
             SectionModel(title: "音视频") {

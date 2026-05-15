@@ -26,6 +26,7 @@ class SearchResultViewController: UIViewController {
     var cancellable: Cancellable?
     private let suggestDelayWork = DelayWork(delay: 1.0)
     private var showHistorySuggest = false
+    private var isApplyingNormalizedSearchText = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -250,15 +251,24 @@ extension SearchResultViewController: UICollectionViewDelegate {
 
 extension SearchResultViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
+        guard !isApplyingNormalizedSearchText else { return }
         guard searchController.searchBar.text != "清空历史" else { return }
-        if let text = searchController.searchBar.text {
-            searchText = text
+        let rawText = searchController.searchBar.text ?? ""
+        let normalizedText = normalizedSearchQuery(rawText)
+
+        if normalizedText != rawText {
+            isApplyingNormalizedSearchText = true
+            searchController.searchBar.text = normalizedText
+            searchController.searchBar.blSearchTextField?.text = normalizedText
+            isApplyingNormalizedSearchText = false
         }
 
-        if let text = searchController.searchBar.text, !text.isEmpty {
+        searchText = normalizedText
+
+        if !normalizedText.isEmpty {
             showHistorySuggest = false
             suggestDelayWork.submit {
-                let result = try await WebRequest.requestSuggest(key: text)
+                let result = try await WebRequest.requestSuggest(key: normalizedText)
                 searchController.searchSuggestions = result.result.tag.map {
                     SuggestEntry(title: $0.term, iconImage: UIImage(systemName: "magnifyingglass"))
                 }
@@ -282,13 +292,25 @@ extension SearchResultViewController: UISearchResultsUpdating {
 
     func updateSearchResults(for searchController: UISearchController, selecting searchSuggestion: any UISearchSuggestion) {
         // 选中建议词后添加搜索历史
-        if searchSuggestion.localizedDescription == "清空历史" {
+        let selectedText = searchSuggestion.localizedSuggestion ?? (searchSuggestion.localizedDescription ?? nil) ?? searchController.searchBar.text ?? ""
+        if selectedText == "清空历史" {
             Settings.clearHistory()
             searchController.searchSuggestions = []
             searchController.searchBar.text = nil
-        } else if let text = searchController.searchBar.text {
-            Settings.addHistory(text)
+            searchText = ""
+        } else {
+            let normalizedText = normalizedSearchQuery(selectedText)
+            searchController.searchBar.text = normalizedText
+            searchController.searchBar.blSearchTextField?.text = normalizedText
+            searchText = normalizedText
+            Settings.addHistory(normalizedText)
+            searchController.searchResultsUpdater?.updateSearchResults(for: searchController)
         }
+    }
+
+    private func normalizedSearchQuery(_ text: String) -> String {
+        guard Settings.searchAutoConvertTraditionalChineseToSimplified else { return text }
+        return text.convertedTraditionalChineseToSimplified()
     }
 }
 

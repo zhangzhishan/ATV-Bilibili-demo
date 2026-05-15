@@ -5,6 +5,7 @@
 //  Created by whw on 2022/10/31.
 //
 
+import CoreFoundation
 import Foundation
 
 extension String {
@@ -27,5 +28,13 @@ extension String {
 
     func removingHTMLTags() -> String {
         return replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
+    }
+
+    func convertedTraditionalChineseToSimplified() -> String {
+        guard !isEmpty else { return self }
+
+        let mutable = NSMutableString(string: self)
+        let didTransform = CFStringTransform(mutable, nil, "Traditional-Simplified" as CFString, false)
+        return didTransform ? (mutable as String) : self
     }
 }

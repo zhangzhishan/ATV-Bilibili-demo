@@ -8,8 +8,8 @@
 import UIKit
 
 enum BLSearchPresentation {
-    static let placeholder = "搜索内容，听写请先切换繁体中文键盘"
-    static let accessibilityHint = "按住 Siri Remote 麦克风听写前，请先切换到繁体中文键盘。"
+    static let placeholder = "搜索内容"
+    static let accessibilityHint = "按住 Siri Remote 麦克风可听写，右侧按钮可切换是否自动繁体转简体。"
 
     static func makeSearchContainer(
         resultsController: UIViewController & UISearchResultsUpdating
@@ -28,18 +28,29 @@ enum BLSearchPresentation {
 
 final class BLSearchContainerViewController: UISearchContainerViewController {
     private var hasActivatedSearchField = false
+    private let conversionToggleButton = BLCustomTextButton()
 
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
         if let textField = searchController.searchBar.blSearchTextField {
-            return [textField]
+            return [textField, conversionToggleButton]
         }
 
-        return [searchController.searchBar]
+        return [searchController.searchBar, conversionToggleButton]
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureConversionToggleButton()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         activateSearchFieldIfNeeded()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        layoutConversionToggleButton()
     }
 
     private func activateSearchFieldIfNeeded() {
@@ -60,6 +71,57 @@ final class BLSearchContainerViewController: UISearchContainerViewController {
                 _ = self.searchController.searchBar.becomeFirstResponder()
             }
         }
+    }
+
+    private func configureConversionToggleButton() {
+        conversionToggleButton.titleFont = BLVisualTheme.font(size: 24, weight: .semibold)
+        conversionToggleButton.accessibilityLabel = "搜索繁体转简体"
+        conversionToggleButton.accessibilityHint = "切换是否自动将繁体中文输入转换为简体中文。"
+        conversionToggleButton.addTarget(self, action: #selector(toggleTraditionalChineseConversion), for: .primaryActionTriggered)
+        view.addSubview(conversionToggleButton)
+        updateConversionToggleButton()
+    }
+
+    private func layoutConversionToggleButton() {
+        let searchFrame = searchController.searchBar.convert(searchController.searchBar.bounds, to: view)
+        let textFieldFrame: CGRect
+        if let textField = searchController.searchBar.blSearchTextField {
+            textFieldFrame = textField.convert(textField.bounds, to: view)
+        } else {
+            textFieldFrame = searchFrame
+        }
+        let safeFrame = view.safeAreaLayoutGuide.layoutFrame
+        let buttonWidth: CGFloat = 118
+        let buttonHeight: CGFloat = 58
+        let proposedX = textFieldFrame.maxX + 20
+        let x = min(max(safeFrame.minX + 20, proposedX), safeFrame.maxX - buttonWidth)
+        let y = max(safeFrame.minY + 12, textFieldFrame.midY - (buttonHeight / 2))
+        conversionToggleButton.frame = CGRect(x: x, y: y, width: buttonWidth, height: buttonHeight)
+    }
+
+    private func updateConversionToggleButton() {
+        let isEnabled = Settings.searchAutoConvertTraditionalChineseToSimplified
+        conversionToggleButton.title = isEnabled ? "转简 开" : "转简 关"
+        conversionToggleButton.accessibilityValue = isEnabled ? "开" : "关"
+    }
+
+    @objc
+    private func toggleTraditionalChineseConversion() {
+        Settings.searchAutoConvertTraditionalChineseToSimplified.toggle()
+        updateConversionToggleButton()
+
+        guard Settings.searchAutoConvertTraditionalChineseToSimplified,
+              let currentText = searchController.searchBar.text,
+              !currentText.isEmpty
+        else {
+            searchController.searchResultsUpdater?.updateSearchResults(for: searchController)
+            return
+        }
+
+        let simplifiedText = currentText.convertedTraditionalChineseToSimplified()
+        searchController.searchBar.text = simplifiedText
+        searchController.searchBar.blSearchTextField?.text = simplifiedText
+        searchController.searchResultsUpdater?.updateSearchResults(for: searchController)
     }
 }
 
