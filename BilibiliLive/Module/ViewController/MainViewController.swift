@@ -14,13 +14,14 @@ class MainViewController: UIViewController {
 
     private let topBar = UIView()
     private let searchButton = BLCustomButton()
-    private let segmentedControl = UISegmentedControl(items: ["首页", "直播"])
+    private let segmentedControl = UISegmentedControl(items: MainContentTab.allCases.map(\.title))
     private let avatarControl = AvatarControl()
 
     // MARK: - Content
 
     private let contentView = UIView()
     private var homeVC: HomeShelfViewController?
+    private var continueWatchingVC: ContinueWatchingViewController?
     private var liveVC: LiveShelfViewController?
     private weak var currentChild: UIViewController?
 
@@ -138,6 +139,13 @@ class MainViewController: UIViewController {
         transitionTo(homeVC!)
     }
 
+    private func switchToContinueWatching() {
+        if continueWatchingVC == nil {
+            continueWatchingVC = ContinueWatchingViewController()
+        }
+        transitionTo(continueWatchingVC!)
+    }
+
     private func switchToLive() {
         if liveVC == nil {
             liveVC = LiveShelfViewController()
@@ -168,9 +176,13 @@ class MainViewController: UIViewController {
     // MARK: - Actions
 
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
-        if sender.selectedSegmentIndex == 0 {
+        guard let selectedTab = MainContentTab(rawValue: sender.selectedSegmentIndex) else { return }
+        switch selectedTab {
+        case .home:
             switchToHome()
-        } else {
+        case .continueWatching:
+            switchToContinueWatching()
+        case .live:
             switchToLive()
         }
     }
