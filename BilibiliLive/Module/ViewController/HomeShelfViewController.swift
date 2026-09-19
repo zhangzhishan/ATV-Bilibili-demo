@@ -30,8 +30,19 @@ class HomeShelfViewController: ShelfViewController, BLTabBarContentVCProtocol {
             ShelfSectionConfig(
                 title: "关注动态",
                 loadData: {
-                    let info = try await WebRequest.requestFollowsFeed(offset: "", page: 1)
-                    return Array(info.videoFeeds.prefix(10))
+                    var offset = ""
+                    var page = 1
+                    for _ in 0..<6 {
+                        let requestedOffset = offset
+                        let info = try await WebRequest.requestFollowsFeed(offset: requestedOffset, page: page)
+                        if !info.videoFeeds.isEmpty {
+                            return Array(info.videoFeeds.prefix(10))
+                        }
+                        guard info.has_more, info.offset != requestedOffset else { break }
+                        offset = info.offset
+                        page += 1
+                    }
+                    return []
                 },
                 showAllAction: { [weak self] in
                     guard let self else { return }

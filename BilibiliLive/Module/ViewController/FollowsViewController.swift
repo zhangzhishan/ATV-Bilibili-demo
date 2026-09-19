@@ -11,6 +11,7 @@ import UIKit
 
 class FollowsViewController: StandardVideoCollectionViewController<DynamicFeedData> {
     var lastOffset = ""
+    private var nextSourcePage = 1
 
     override func setupCollectionView() {
         super.setupCollectionView()
@@ -20,11 +21,24 @@ class FollowsViewController: StandardVideoCollectionViewController<DynamicFeedDa
     override func request(page: Int) async throws -> [DynamicFeedData] {
         if page == 1 {
             lastOffset = ""
+            nextSourcePage = 1
         }
-        let info = try await WebRequest.requestFollowsFeed(offset: lastOffset, page: page)
-        lastOffset = info.offset
-        Logger.debug("request page\(page) get count:\(info.videoFeeds.count) next offset:\(info.offset)")
-        return info.videoFeeds
+
+        // A dynamic page can contain only text/images and therefore no playable
+        // videos. Scan a bounded number of source pages, and stop if the API's
+        // offset stalls instead of recursing forever.
+        for _ in 0..<6 {
+            let requestedOffset = lastOffset
+            let sourcePage = nextSourcePage
+            let info = try await WebRequest.requestFollowsFeed(offset: requestedOffset, page: sourcePage)
+            nextSourcePage += 1
+            lastOffset = info.offset
+            Logger.debug("request page\(sourcePage) get count:\(info.videoFeeds.count) next offset:\(info.offset)")
+            if !info.videoFeeds.isEmpty || !info.has_more || info.offset == requestedOffset {
+                return info.videoFeeds
+            }
+        }
+        return []
     }
 
     override func goDetail(with feed: DynamicFeedData) {
@@ -45,6 +59,19 @@ extension WebRequest {
             return items
                 .filter({ $0.aid != 0 || $0.modules.module_dynamic.major?.pgc != nil })
         }
+
+        enum CodingKeys: String, CodingKey {
+            case items, offset, update_num, update_baseline, has_more
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            items = try container.decode([DynamicFeedData].self, forKey: .items)
+            offset = try container.decode(String.self, forKey: .offset)
+            update_num = container.decodeFlexibleIntIfPresent(forKey: .update_num) ?? 0
+            update_baseline = try container.decode(String.self, forKey: .update_baseline)
+            has_more = try container.decode(Bool.self, forKey: .has_more)
+        }
     }
 
     static func requestFollowsFeed(offset: String, page: Int) async throws -> DynamicFeedInfo {
@@ -52,11 +79,7 @@ extension WebRequest {
         if let offsetNum = Int(offset) {
             param["offset"] = offsetNum
         }
-        let res: DynamicFeedInfo = try await request(url: "https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all", parameters: param)
-        if res.videoFeeds.isEmpty, res.has_more {
-            return try await requestFollowsFeed(offset: res.offset, page: page)
-        }
-        return res
+        return try await request(url: "https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all", parameters: param)
     }
 }
 
@@ -150,10 +173,22 @@ struct DynamicFeedData: Codable, PlayableData, DisplayData {
                 }
 
                 struct Pgc: Codable, Hashable {
-                    let epid: Int
+                    let epid: Int?
                     let title: String?
                     let cover: URL?
                     let jump_url: URL?
+
+                    enum CodingKeys: String, CodingKey {
+                        case epid, title, cover, jump_url
+                    }
+
+                    init(from decoder: Decoder) throws {
+                        let container = try decoder.container(keyedBy: CodingKeys.self)
+                        epid = container.decodeFlexibleIntIfPresent(forKey: .epid)
+                        title = try container.decodeIfPresent(String.self, forKey: .title)
+                        cover = try container.decodeIfPresent(URL.self, forKey: .cover)
+                        jump_url = try container.decodeIfPresent(URL.self, forKey: .jump_url)
+                    }
                 }
             }
         }
