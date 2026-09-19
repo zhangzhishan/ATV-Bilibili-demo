@@ -12,6 +12,7 @@ import UIKit
 class FollowsViewController: StandardVideoCollectionViewController<DynamicFeedData> {
     var lastOffset = ""
     private var nextSourcePage = 1
+    private var canLoadMore = true
 
     override func setupCollectionView() {
         super.setupCollectionView()
@@ -22,7 +23,9 @@ class FollowsViewController: StandardVideoCollectionViewController<DynamicFeedDa
         if page == 1 {
             lastOffset = ""
             nextSourcePage = 1
+            canLoadMore = true
         }
+        guard canLoadMore else { return [] }
 
         // A dynamic page can contain only text/images and therefore no playable
         // videos. Scan a bounded number of source pages, and stop if the API's
@@ -33,8 +36,13 @@ class FollowsViewController: StandardVideoCollectionViewController<DynamicFeedDa
             let info = try await WebRequest.requestFollowsFeed(offset: requestedOffset, page: sourcePage)
             nextSourcePage += 1
             lastOffset = info.offset
+            canLoadMore = FollowsFeedCompatibility.canAdvance(
+                hasMore: info.has_more,
+                currentOffset: requestedOffset,
+                nextOffset: info.offset
+            )
             Logger.debug("request page\(sourcePage) get count:\(info.videoFeeds.count) next offset:\(info.offset)")
-            if !info.videoFeeds.isEmpty || !info.has_more || info.offset == requestedOffset {
+            if !info.videoFeeds.isEmpty || !canLoadMore {
                 return info.videoFeeds
             }
         }
@@ -57,7 +65,12 @@ extension WebRequest {
         let has_more: Bool
         var videoFeeds: [DynamicFeedData] {
             return items
-                .filter({ $0.aid != 0 || $0.modules.module_dynamic.major?.pgc != nil })
+                .filter {
+                    FollowsFeedCompatibility.isPlayable(
+                        archiveAid: $0.modules.module_dynamic.major?.archive?.aid,
+                        pgcEpid: $0.modules.module_dynamic.major?.pgc?.epid
+                    )
+                }
         }
 
         enum CodingKeys: String, CodingKey {

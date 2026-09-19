@@ -18,3 +18,16 @@ extension KeyedDecodingContainer {
         return nil
     }
 }
+
+enum FollowsFeedCompatibility {
+    static func isPlayable(archiveAid: String?, pgcEpid: Int?) -> Bool {
+        if let archiveAid, let aid = Int(archiveAid), aid > 0 {
+            return true
+        }
+        return (pgcEpid ?? 0) > 0
+    }
+
+    static func canAdvance(hasMore: Bool, currentOffset: String, nextOffset: String) -> Bool {
+        hasMore && nextOffset != currentOffset
+    }
+}

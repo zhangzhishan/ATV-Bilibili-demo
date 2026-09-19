@@ -38,7 +38,11 @@ class HomeShelfViewController: ShelfViewController, BLTabBarContentVCProtocol {
                         if !info.videoFeeds.isEmpty {
                             return Array(info.videoFeeds.prefix(10))
                         }
-                        guard info.has_more, info.offset != requestedOffset else { break }
+                        guard FollowsFeedCompatibility.canAdvance(
+                            hasMore: info.has_more,
+                            currentOffset: requestedOffset,
+                            nextOffset: info.offset
+                        ) else { break }
                         offset = info.offset
                         page += 1
                     }
