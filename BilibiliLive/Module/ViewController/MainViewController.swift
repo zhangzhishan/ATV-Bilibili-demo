@@ -273,11 +273,14 @@ private class AvatarControl: UIControl {
     }
 
     func setAvatarURL(_ url: URL) {
+        let thumbnailURL = url
+            .deletingLastPathComponent()
+            .appending(component: url.lastPathComponent + "@240w_240h.jpg")
         imageView.kf.setImage(
-            with: url,
+            with: thumbnailURL,
             options: [
-                .processor(DownsamplingImageProcessor(size: CGSize(width: 112, height: 112))),
-                .processor(RoundCornerImageProcessor(radius: .widthFraction(0.5))),
+                .processor(DownsamplingImageProcessor(size: CGSize(width: 112, height: 112))
+                    |> RoundCornerImageProcessor(radius: .widthFraction(0.5))),
                 .cacheSerializer(FormatIndicatedCacheSerializer.png),
             ]
         )

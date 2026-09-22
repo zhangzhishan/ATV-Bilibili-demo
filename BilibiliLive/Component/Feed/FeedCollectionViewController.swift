@@ -9,7 +9,7 @@ import SnapKit
 import TVUIKit
 import UIKit
 
-protocol DisplayData: Hashable {
+protocol DisplayData: Hashable, AvatarProviding {
     var title: String { get }
     var ownerName: String { get }
     var pic: URL? { get }
@@ -173,7 +173,14 @@ class FeedCollectionViewController: UIViewController {
     }
 
     private func makeGridLayoutSection() -> NSCollectionLayoutSection {
-        let style = styleOverride ?? Settings.displayStyle
+        var style = Settings.displayStyle
+        if parent?.parent is PersonalViewController {
+            style = .sideBar
+        }
+        if let styleOverride {
+            style = styleOverride
+        }
+
         let heightDimension = NSCollectionLayoutDimension.estimated(style.heightEstimated)
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(style.fractionalWidth),

@@ -27,6 +27,8 @@ class SearchResultViewController: UIViewController {
     private let suggestDelayWork = DelayWork(delay: 1.0)
     private var showHistorySuggest = false
     private var isApplyingNormalizedSearchText = false
+    private let hotSuggestLimit = 6
+    private var hotSuggestsCache: [SuggestEntry] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +47,7 @@ class SearchResultViewController: UIViewController {
 
         cancellable = $searchText
             .filter({ $0.count > 0 })
-            .debounce(for: 0.8, scheduler: RunLoop.main)
+            .debounce(for: 1.5, scheduler: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] key in
                 guard let self else { return }
@@ -267,25 +269,34 @@ extension SearchResultViewController: UISearchResultsUpdating {
 
         if !normalizedText.isEmpty {
             showHistorySuggest = false
-            suggestDelayWork.submit {
+            suggestDelayWork.submit { [weak self] in
                 let result = try await WebRequest.requestSuggest(key: normalizedText)
+                guard !Task.isCancelled, self?.searchText == normalizedText else { return }
                 searchController.searchSuggestions = result.result.tag.map {
                     SuggestEntry(title: $0.term, iconImage: UIImage(systemName: "magnifyingglass"))
                 }
             }
         } else {
-            suggestDelayWork.cancel()
             // 添加showHistorySuggest判断避免可能重复执行
             if !showHistorySuggest {
+                suggestDelayWork.cancel()
                 showHistorySuggest = true
-                // 清空搜索词后显示历史搜索词
-                var suggests = Settings.searchHistories.map {
-                    SuggestEntry(title: $0, iconImage: UIImage(systemName: "clock"))
+                searchController.searchSuggestions = buildSuggestions(hotSuggests: hotSuggestsCache)
+                guard hotSuggestsCache.isEmpty else { return }
+
+                // Keep history visible while loading trending suggestions.
+                suggestDelayWork.submit { [weak self] in
+                    guard let self else { return }
+                    do {
+                        let hotSuggests = try await self.fetchHotSuggestions()
+                        guard !Task.isCancelled, self.searchText.isEmpty else { return }
+                        self.hotSuggestsCache = hotSuggests
+                        searchController.searchSuggestions = self.buildSuggestions(hotSuggests: hotSuggests)
+                    } catch {
+                        guard !Task.isCancelled, self.searchText.isEmpty else { return }
+                        searchController.searchSuggestions = self.buildHistorySuggestions()
+                    }
                 }
-                if !suggests.isEmpty {
-                    suggests.append(SuggestEntry(title: "清空历史", iconImage: UIImage(systemName: "trash")))
-                }
-                searchController.searchSuggestions = suggests
             }
         }
     }
@@ -298,6 +309,8 @@ extension SearchResultViewController: UISearchResultsUpdating {
             searchController.searchSuggestions = []
             searchController.searchBar.text = nil
             searchText = ""
+            showHistorySuggest = false
+            updateSearchResults(for: searchController)
         } else {
             let normalizedText = normalizedSearchQuery(selectedText)
             searchController.searchBar.text = normalizedText
@@ -314,6 +327,29 @@ extension SearchResultViewController: UISearchResultsUpdating {
     }
 }
 
+private extension SearchResultViewController {
+    func fetchHotSuggestions() async throws -> [SuggestEntry] {
+        let result = try await WebRequest.requestSearchHotMobile(limit: hotSuggestLimit)
+        return result.list.map {
+            SuggestEntry(title: $0.show_name, iconImage: UIImage(systemName: "flame"))
+        }
+    }
+
+    func buildSuggestions(hotSuggests: [SuggestEntry]) -> [SuggestEntry] {
+        buildHistorySuggestions() + hotSuggests
+    }
+
+    func buildHistorySuggestions() -> [SuggestEntry] {
+        var suggests = Settings.searchHistories.map {
+            SuggestEntry(title: $0, iconImage: UIImage(systemName: "clock"))
+        }
+        if !suggests.isEmpty {
+            suggests.append(SuggestEntry(title: "清空历史", iconImage: UIImage(systemName: "trash")))
+        }
+        return suggests
+    }
+}
+
 extension WebRequest {
     static func requestSearchResult(key: String) async throws -> SearchResult {
         try await request(url: "https://api.bilibili.com/x/web-interface/search/all/v2", parameters: ["keyword": key])
@@ -325,6 +361,10 @@ extension WebRequest {
 
     static func requestSuggest(key: String) async throws -> SuggestResult {
         try await request(url: "https://api.bilibili.com/x/web-interface/suggest", parameters: ["term": key])
+    }
+
+    static func requestSearchHotMobile(limit: Int) async throws -> SearchHotMobileResult {
+        try await request(url: "https://app.bilibili.com/x/v2/search/trending/ranking", parameters: ["limit": limit])
     }
 }
 
@@ -493,6 +533,20 @@ struct SuggestResult: Decodable, Hashable {
     }
 
     let result: Result
+}
+
+struct SearchHotMobileResult: Decodable, Hashable {
+    let trackid: String
+    let list: [Item]
+
+    struct Item: Codable, Hashable {
+        let position: Int
+        let keyword: String
+        let show_name: String
+        let word_type: Int
+        let icon: URL?
+        let hot_id: Int
+    }
 }
 
 class SuggestEntry: NSObject, UISearchSuggestion {

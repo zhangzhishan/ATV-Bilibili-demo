@@ -33,6 +33,7 @@ class BLTextOnlyCollectionViewCell: BLMotionCollectionViewCell {
             make.top.bottom.lessThanOrEqualToSuperview().inset(8)
         }
         titleLabel.textColor = BLVisualTheme.textPrimary
+        titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 2
         titleLabel.font = BLVisualTheme.font(size: 26, weight: .medium)
         effectView.layer.cornerRadius = 16

@@ -134,27 +134,6 @@ class SettingsViewController: UIViewController {
                 Toggle(title: "搜索自动繁转简", setting: Settings.searchAutoConvertTraditionalChineseToSimplified, onChange: Settings.searchAutoConvertTraditionalChineseToSimplified.toggle())
             }
 
-            SectionModel(title: "音视频") {
-                Actions(title: "最高画质", message: "4k以上需要大会员",
-                        current: Settings.mediaQuality.desp,
-                        options: MediaQualityEnum.allCases,
-                        optionString: MediaQualityEnum.allCases.map({ $0.desp }))
-                {
-                    Settings.mediaQuality = $0
-                }
-                Actions(title: "默认播放速度", message: "默认设置为1.0",
-                        current: Settings.mediaPlayerSpeed.name,
-                        options: PlaySpeed.blDefaults,
-                        optionString: PlaySpeed.blDefaults.map({ $0.name }))
-                {
-                    Settings.mediaPlayerSpeed = $0
-                }
-                Toggle(title: "Avc优先(卡顿尝试开启)", setting: Settings.preferAvc, onChange: Settings.preferAvc.toggle())
-                Toggle(title: "无损音频和杜比全景声", setting: Settings.losslessAudio, onChange: Settings.losslessAudio.toggle())
-                Toggle(title: "匹配视频内容", setting: Settings.contentMatch, onChange: Settings.contentMatch.toggle())
-                Toggle(title: "仅在HDR视频匹配视频内容", setting: Settings.contentMatchOnlyInHDR, onChange: Settings.contentMatchOnlyInHDR.toggle())
-            }
-
             SectionModel(title: "界面") {
                 Actions(title: "界面字号", message: "当前设置页会立即更新，其他界面重新进入后生效",
                         current: Settings.interfaceTextSize.title,
@@ -184,6 +163,36 @@ class SettingsViewController: UIViewController {
                 {
                     Settings.showRelatedVideoInCurrentVC = $0
                 }
+            }
+
+            SectionModel(title: "关注页面") {
+                Toggle(title: "关注刷视频模式",
+                       setting: Settings.followsFeedFlowEnabled,
+                       onChange: Settings.followsFeedFlowEnabled.toggle())
+                { _ in
+                    NotificationCenter.default.post(name: .followsLayoutModeDidChange, object: nil)
+                }
+            }
+
+            SectionModel(title: "音视频") {
+                Actions(title: "最高画质", message: "4k以上需要大会员",
+                        current: Settings.mediaQuality.desp,
+                        options: MediaQualityEnum.allCases,
+                        optionString: MediaQualityEnum.allCases.map({ $0.desp }))
+                {
+                    Settings.mediaQuality = $0
+                }
+                Actions(title: "默认播放速度", message: "默认设置为1.0",
+                        current: Settings.mediaPlayerSpeed.name,
+                        options: PlaySpeed.blDefaults,
+                        optionString: PlaySpeed.blDefaults.map({ $0.name }))
+                {
+                    Settings.mediaPlayerSpeed = $0
+                }
+                Toggle(title: "Avc优先(卡顿尝试开启)", setting: Settings.preferAvc, onChange: Settings.preferAvc.toggle())
+                Toggle(title: "无损音频和杜比全景声", setting: Settings.losslessAudio, onChange: Settings.losslessAudio.toggle())
+                Toggle(title: "匹配视频内容", setting: Settings.contentMatch, onChange: Settings.contentMatch.toggle())
+                Toggle(title: "仅在HDR视频匹配视频内容", setting: Settings.contentMatchOnlyInHDR, onChange: Settings.contentMatchOnlyInHDR.toggle())
             }
 
             SectionModel(title: "进度控制") {
