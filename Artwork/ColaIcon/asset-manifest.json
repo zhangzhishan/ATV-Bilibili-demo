@@ -1,0 +1,138 @@
+[
+  {
+    "path": "App Icon - App Store.imagestack/Back.imagestacklayer/Content.imageset/back.png",
+    "size": [
+      1280,
+      768
+    ],
+    "sha256": "46ce519acfce71eeac1400d99bc2f347fd8fe41a283d10843e3b13b32b7a59d7"
+  },
+  {
+    "path": "App Icon - App Store.imagestack/Front.imagestacklayer/Content.imageset/front.png",
+    "size": [
+      1280,
+      768
+    ],
+    "sha256": "46ce519acfce71eeac1400d99bc2f347fd8fe41a283d10843e3b13b32b7a59d7"
+  },
+  {
+    "path": "App Icon - App Store.imagestack/Middle.imagestacklayer/Content.imageset/middle.png",
+    "size": [
+      1280,
+      768
+    ],
+    "sha256": "46ce519acfce71eeac1400d99bc2f347fd8fe41a283d10843e3b13b32b7a59d7"
+  },
+  {
+    "path": "App Icon.imagestack/Back.imagestacklayer/Content.imageset/back_1x.png",
+    "size": [
+      400,
+      240
+    ],
+    "sha256": "eca8089aded18dcb214ec5708d0ccb1f18dc0980de85e6f3b90314b40f85913d"
+  },
+  {
+    "path": "App Icon.imagestack/Back.imagestacklayer/Content.imageset/back_2x.png",
+    "size": [
+      800,
+      480
+    ],
+    "sha256": "22947c4c0aa0d626df0fc3bdb5acccf9aadbe4f7e622ca97d322a71fa8eb08d8"
+  },
+  {
+    "path": "App Icon.imagestack/Front.imagestacklayer/Content.imageset/front_1x.png",
+    "size": [
+      400,
+      240
+    ],
+    "sha256": "eca8089aded18dcb214ec5708d0ccb1f18dc0980de85e6f3b90314b40f85913d"
+  },
+  {
+    "path": "App Icon.imagestack/Front.imagestacklayer/Content.imageset/front_2x.png",
+    "size": [
+      800,
+      480
+    ],
+    "sha256": "22947c4c0aa0d626df0fc3bdb5acccf9aadbe4f7e622ca97d322a71fa8eb08d8"
+  },
+  {
+    "path": "App Icon.imagestack/Middle.imagestacklayer/Content.imageset/middle_1x.png",
+    "size": [
+      400,
+      240
+    ],
+    "sha256": "eca8089aded18dcb214ec5708d0ccb1f18dc0980de85e6f3b90314b40f85913d"
+  },
+  {
+    "path": "App Icon.imagestack/Middle.imagestacklayer/Content.imageset/middle_2x.png",
+    "size": [
+      800,
+      480
+    ],
+    "sha256": "22947c4c0aa0d626df0fc3bdb5acccf9aadbe4f7e622ca97d322a71fa8eb08d8"
+  },
+  {
+    "path": "Top Shelf Image Wide.imageset/TopShelfWide-marketing.png",
+    "size": [
+      2320,
+      720
+    ],
+    "sha256": "39a47921baa632c1fe4b0c80cb93504711339c8d6489b7ba3048a466cde6903f"
+  },
+  {
+    "path": "Top Shelf Image Wide.imageset/TopShelfWide-marketing@2x.png",
+    "size": [
+      4640,
+      1440
+    ],
+    "sha256": "27f818552267748a408c2dc031172e16a01bdb860b9868768f6a2052ea226db2"
+  },
+  {
+    "path": "Top Shelf Image Wide.imageset/TopShelfWide.png",
+    "size": [
+      2320,
+      720
+    ],
+    "sha256": "39a47921baa632c1fe4b0c80cb93504711339c8d6489b7ba3048a466cde6903f"
+  },
+  {
+    "path": "Top Shelf Image Wide.imageset/TopShelfWide@2x.png",
+    "size": [
+      4640,
+      1440
+    ],
+    "sha256": "27f818552267748a408c2dc031172e16a01bdb860b9868768f6a2052ea226db2"
+  },
+  {
+    "path": "Top Shelf Image.imageset/TopShelf-marketing.png",
+    "size": [
+      1920,
+      720
+    ],
+    "sha256": "0393d1e23c435440ef7305828fa72dad47e3fa941f085a568611d2597fb6f813"
+  },
+  {
+    "path": "Top Shelf Image.imageset/TopShelf-marketing@2x.png",
+    "size": [
+      3840,
+      1440
+    ],
+    "sha256": "550729e93f127386b0b63f1a65648e03459b27d3c8f1ee3a07dd9503a69137cc"
+  },
+  {
+    "path": "Top Shelf Image.imageset/TopShelf.png",
+    "size": [
+      1920,
+      720
+    ],
+    "sha256": "0393d1e23c435440ef7305828fa72dad47e3fa941f085a568611d2597fb6f813"
+  },
+  {
+    "path": "Top Shelf Image.imageset/TopShelf@2x.png",
+    "size": [
+      3840,
+      1440
+    ],
+    "sha256": "550729e93f127386b0b63f1a65648e03459b27d3c8f1ee3a07dd9503a69137cc"
+  }
+]
